@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- 数据源配置 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+    <!-- Flowable流程引擎 -->
+    <bean id="processEngineConfiguration"
+          class="org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+        <property name="asyncExecutorActivate" value="true"/>
+
+        <property name="businessCalendarManager" ref="businessCalendarManager"/>
+
+        <property name="disableEventRegistry" value="false"/>
+        <property name="activityFontName" value="宋体"/>
+        <property name="labelFontName" value="宋体"/>
+        <property name="annotationFontName" value="宋体"/>
+    </bean>
+
+    <!-- 初始化时钟 -->
+    <bean id="clock" class="org.flowable.common.engine.impl.util.DefaultClockImpl"/>
+    <bean id="cycleBusinessCalendar" class="org.flowable.common.engine.impl.calendar.CycleBusinessCalendar">
+        <constructor-arg name="clockReader" ref="clock"/>
+    </bean>
+    <bean id="dueDateBusinessCalendar" class="org.flowable.common.engine.impl.calendar.DueDateBusinessCalendar">
+        <constructor-arg name="clockReader" ref="clock"/>
+    </bean>
+    <bean id="durationBusinessCalendar" class="org.flowable.common.engine.impl.calendar.DurationBusinessCalendar">
+        <constructor-arg name="clockReader" ref="clock"/>
+    </bean>
+    <!-- 自定义业务日历 -->
+    <bean id="customBusinessCalendar" class="com.bpm.example.demo4.calendar.CustomBusinessCalendar">
+        <constructor-arg name="clockReader" ref="clock"/>
+    </bean>
+    <!-- 业务日历管理器 -->
+    <bean id="businessCalendarManager" class="org.flowable.common.engine.impl.calendar.MapBusinessCalendarManager">
+        <constructor-arg name="businessCalendars">
+            <map>
+                <entry key="cycle" value-ref="cycleBusinessCalendar"/>
+                <entry key="dueDate" value-ref="dueDateBusinessCalendar"/>
+                <entry key="duration" value-ref="durationBusinessCalendar"/>
+                <!-- 配置自定义业务日历 -->
+                <entry key="custom" value-ref="customBusinessCalendar"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+</beans>

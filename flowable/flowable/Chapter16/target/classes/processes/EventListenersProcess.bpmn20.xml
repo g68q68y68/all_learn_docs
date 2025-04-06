@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="eventListenersProcess" name="事件监听器示例流程">
+    <extensionElements>
+      <flowable:eventListener class="com.bpm.example.eventlistener.demo.listener.GlobalEventListener"/>
+    </extensionElements>
+    <startEvent id="startEvent1"/>
+    <userTask id="userTask1" name="数据上报" flowable:assignee="huhaiqin"/>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="userTask1"/>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="seqFlow2" sourceRef="userTask1" targetRef="endEvent1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_eventListenersProcess">
+    <bpmndi:BPMNPlane bpmnElement="eventListenersProcess" id="BPMNPlane_eventListenersProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="45.0" y="75.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="135.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="315.0" y="76.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="235.0" y="90.0"/>
+        <omgdi:waypoint x="315.0" y="90.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="75.0" y="90.0"/>
+        <omgdi:waypoint x="135.0" y="90.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

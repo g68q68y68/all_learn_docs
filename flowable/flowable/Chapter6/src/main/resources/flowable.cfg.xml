@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 身份管理引擎配置 -->
+    <bean id="idmEngineConfiguration" class="org.flowable.idm.engine.IdmEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+        <!-- 配置用户密码编码器 -->
+        <property name="passwordEncoder">
+            <bean class="org.flowable.idm.engine.impl.authentication.ClearTextPasswordEncoder"/>
+        </property>
+        <!-- 配置密码加密盐 -->
+        <property name="passwordSalt">
+            <bean class="org.flowable.idm.engine.impl.authentication.BlankSalt"/>
+        </property>
+    </bean>
+
+    <!-- 身份管理引擎配置器 -->
+    <bean id="idmEngineConfigurator" class="org.flowable.idm.engine.configurator.IdmEngineConfigurator">
+        <property name="idmEngineConfiguration" ref="idmEngineConfiguration"/>
+    </bean>
+
+    <!-- Flowable流程引擎 -->
+    <bean id="processEngineConfiguration"
+          class="org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+        <!-- 启用IdmEngine -->
+        <property name="disableIdmEngine" value="false"/>
+        <!-- 注册IdmEngine -->
+        <property name="idmEngineConfigurator" ref="idmEngineConfigurator"/>
+    </bean>
+
+    <!--数据源配置-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+</beans>

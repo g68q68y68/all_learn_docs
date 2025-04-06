@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <!-- 定义数据源1 -->
+    <bean id="dataSource1" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable1"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+    <!-- 定义数据源2 -->
+    <bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable2"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <!-- 定义租户 -->
+    <bean id="tenantList" class="java.util.concurrent.CopyOnWriteArrayList">
+       <constructor-arg>
+           <list>
+               <value>tenantId1</value>
+               <value>tenantId2</value>
+           </list>
+       </constructor-arg>
+    </bean>
+
+    <!-- 绑定租户和数据源 -->
+    <bean id="tenantDataSourceRelationMap" class="java.util.concurrent.ConcurrentHashMap">
+        <constructor-arg>
+            <map key-type="java.lang.String" value-type="javax.sql.DataSource">
+                <entry key="tenantId1" value-ref="dataSource1"/>
+                <entry key="tenantId2" value-ref="dataSource2"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="tenantInfoHolder"
+          class="com.bpm.example.demo6.multidatasource.MultiTenantInfoHolder">
+        <property name="tenantList" ref="tenantList"/>
+    </bean>
+
+    <!-- Flowable流程引擎 -->
+    <bean id="processEngineConfiguration"
+          class="com.bpm.example.demo6.multidatasource.MultiTenantDataSourceProcessEngineConfiguration">
+        <constructor-arg name="tenantInfoHolder" ref="tenantInfoHolder"/>
+
+        <property name="tenantDataSourceRelationMap" ref="tenantDataSourceRelationMap"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="true"/>
+        <property name="databaseType" value="h2"/>
+        <property name="disableEventRegistry" value="true"/>
+
+    </bean>
+
+    <bean id="multiTenantDeployUtil" class="com.bpm.example.demo6.deploy.MultiTenantDeployUtil"/>
+
+    <aop:aspectj-autoproxy expose-proxy="true" proxy-target-class="true"/>
+    <!-- 配置AOP切面类 -->
+    <bean id ="tenantAspect" class="com.bpm.example.demo6.aspect.TenantAspect"/>
+    <!-- 配置AOP -->
+    <aop:config>
+        <!-- 配置切点 -->
+        <aop:pointcut id="tenantPoint" expression="@annotation(com.bpm.example.demo6.annotation.TenantAnnotation)"/>
+        <!-- 配置切面 -->
+        <aop:aspect ref="tenantAspect">
+            <!-- 配置环绕通知 -->
+            <aop:around method="tenantPointCut" pointcut-ref="tenantPoint"/>
+        </aop:aspect>
+    </aop:config>
+
+
+
+</beans>

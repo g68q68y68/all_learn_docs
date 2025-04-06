@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <!-- 定义id为payError的错误 -->
+  <error id="payError" errorCode="payErrorCode"/>
+  <process id="errorEndEventProcess" name="错误结束事件示例流程">
+    <startEvent id="startEvent1"/>
+    <userTask id="userTask1" name="下单"/>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="userTask1"/>
+    <subProcess id="subProcess1" name="付款子流程">
+      <startEvent  id="startEvent2"/>
+      <userTask id="userTask2" name="付款"/>
+      <exclusiveGateway id="exclusiveGateway1"/>
+      <endEvent id="endEvent2"/>
+      <!-- 定义错误结束事件 -->
+      <endEvent id="endEvent3">
+        <errorEventDefinition errorRef="payError"/>
+      </endEvent>
+      <sequenceFlow id="seqFlow2" sourceRef="startEvent2" targetRef="userTask2"/>
+      <sequenceFlow id="seqFlow3" sourceRef="userTask2" targetRef="exclusiveGateway1"/>
+      <sequenceFlow id="seqFlow4" name="付款成功" sourceRef="exclusiveGateway1" targetRef="endEvent2">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${payResult == true}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="seqFlow5" name="付款失败" sourceRef="exclusiveGateway1" targetRef="endEvent3">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${payResult == false}]]></conditionExpression>
+      </sequenceFlow>
+    </subProcess>
+    <!-- 定义错误边界事件 -->
+    <boundaryEvent id="boundaryEvent1" attachedToRef="subProcess1">
+      <errorEventDefinition errorRef="payError"/>
+    </boundaryEvent>
+    <sequenceFlow id="seqFlow6" sourceRef="userTask1" targetRef="subProcess1"/>
+    <userTask id="userTask3" name="发货"/>
+    <sequenceFlow id="seqFlow7" sourceRef="subProcess1" targetRef="userTask3"/>
+    <userTask id="userTask4" name="收货"/>
+    <sequenceFlow id="seqFlow8" sourceRef="userTask3" targetRef="userTask4"/>
+    <endEvent id="endEvent1"></endEvent>
+    <sequenceFlow id="seqFlow9" sourceRef="userTask4" targetRef="endEvent1"/>
+    <sequenceFlow id="seqFlow10" name="重新付款" sourceRef="boundaryEvent1" targetRef="subProcess1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_errorEndEventProcess">
+    <bpmndi:BPMNPlane bpmnElement="errorEndEventProcess" id="BPMNPlane_errorEndEventProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="45.0" y="139.0203030004467"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="120.0" y="114.02030300044669"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcess1" id="BPMNShape_subProcess1">
+        <omgdc:Bounds height="218.04060600089332" width="433.636568067276" x="272.72727010007077" y="44.99999999999999"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startEvent2" id="BPMNShape_startEvent2">
+        <omgdc:Bounds height="29.999999999999993" width="30.0" x="302.72727010007077" y="150.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask2" id="BPMNShape_userTask2">
+        <omgdc:Bounds height="80.0" width="100.0" x="377.72727010007077" y="125.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusiveGateway1" id="BPMNShape_exclusiveGateway1">
+        <omgdc:Bounds height="39.99999999999999" width="40.0" x="522.7272701000708" y="145.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent2" id="BPMNShape_endEvent2">
+        <omgdc:Bounds height="27.999999999999993" width="28.0" x="647.7272701000708" y="90.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent3" id="BPMNShape_endEvent3">
+        <omgdc:Bounds height="27.999999999999993" width="28.0" x="647.7272701000708" y="213.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryEvent1" id="BPMNShape_boundaryEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="536.3576389758647" y="248.09777171377863"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask3" id="BPMNShape_userTask3">
+        <omgdc:Bounds height="80.00000000000001" width="100.0" x="757.5757502779744" y="114.02030300044667"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask4" id="BPMNShape_userTask4">
+        <omgdc:Bounds height="80.0" width="100.00000000000023" x="914.5454453502477" y="114.02030300044669"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="1059.545445350248" y="140.0203030004467"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow8" id="BPMNEdge_seqFlow8">
+        <omgdi:waypoint x="857.5757502779744" y="154.0203030004467"/>
+        <omgdi:waypoint x="914.5454453502477" y="154.0203030004467"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow5" id="BPMNEdge_seqFlow5">
+        <omgdi:waypoint x="555.7356034334041" y="171.99166666666667"/>
+        <omgdi:waypoint x="649.3010881653257" y="220.55096886930951"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="332.72727010007077" y="165.0"/>
+        <omgdi:waypoint x="377.72727010007077" y="165.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="477.72727010007077" y="165.2164502164502"/>
+        <omgdi:waypoint x="523.1403135783316" y="165.41304347826087"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4">
+        <omgdi:waypoint x="556.3939367667374" y="158.66666666666666"/>
+        <omgdi:waypoint x="649.3010881653257" y="110.44903113069049"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="75.0" y="154.0203030004467"/>
+        <omgdi:waypoint x="120.0" y="154.0203030004467"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow7" id="BPMNEdge_seqFlow7">
+        <omgdi:waypoint x="706.3638381673468" y="154.0203030004467"/>
+        <omgdi:waypoint x="757.5757502779744" y="154.0203030004467"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow6" id="BPMNEdge_seqFlow6">
+        <omgdi:waypoint x="220.0" y="154.0203030004467"/>
+        <omgdi:waypoint x="272.72727010007077" y="154.0203030004467"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow9" id="BPMNEdge_seqFlow9">
+        <omgdi:waypoint x="1014.545445350248" y="154.0203030004467"/>
+        <omgdi:waypoint x="1059.545445350248" y="154.0203030004467"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow10" id="BPMNEdge_seqFlow10">
+        <omgdi:waypoint x="551.3576389758647" y="278.0977717137786"/>
+        <omgdi:waypoint x="551.3576389758647" y="342.42425219120634"/>
+        <omgdi:waypoint x="424.5000689236174" y="342.42425219120634"/>
+        <omgdi:waypoint x="424.5000689236174" y="263.0406060008933"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

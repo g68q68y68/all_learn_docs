@@ -1,0 +1,46 @@
+# Server config
+server:
+  port: 8080
+
+# Spring
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  flyway:
+    enabled: false
+  liquibase:
+    enabled: false
+  thymeleaf:
+    cache: false
+  #数据库设置
+  datasource:
+    url: jdbc:mysql://localhost:3306/flowable?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+    driverClassName: com.mysql.jdbc.Driver
+    username: root
+    password: 12345678
+    type: com.alibaba.druid.pool.DruidDataSource
+    filters: stat,wall,log4j
+    maxActive: 20
+    initialSize: 10
+    maxWait: 60000
+    minIdle: 10
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    validationQuery: SELECT 1 FROM DUAL
+    connection-init-sql: set names utf8mb4
+  #jpa设置
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+
+
+

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <escalation id="qualityEscalation" name="质量检查升级" escalationCode="qualityEscalation"/>
+  <escalation id="customerServiceEscalation" name="客服处理升级" escalationCode="customerServiceEscalation"/>
+  <process id="IntermediateThrowingEscalationEventProcess" name="升级中间抛出事件示例流程">
+    <startEvent id="startEvent1"></startEvent>
+    <userTask id="userTask1" name="问题上报"></userTask>
+    <userTask id="userTask3" name="客服经理处理"></userTask>
+    <endEvent id="endEvent1" name="升级质量检查">
+      <escalationEventDefinition escalationRef="qualityEscalation"></escalationEventDefinition>
+    </endEvent>
+    <subProcess id="eventSubProcess1" name="质量检查事件子流程" triggeredByEvent="true">
+      <startEvent id="startEvent2" isInterrupting="true">
+        <escalationEventDefinition escalationRef="qualityEscalation"></escalationEventDefinition>
+      </startEvent>
+      <userTask id="userTask4" name="质量检查"></userTask>
+      <endEvent id="endEvent3"></endEvent>
+      <intermediateThrowEvent id="intermediateThrowEvent1" name="升级客服处理">
+        <escalationEventDefinition escalationRef="customerServiceEscalation"/>
+      </intermediateThrowEvent>
+      <exclusiveGateway id="exclusiveGateway1"></exclusiveGateway>
+      <sequenceFlow id="sequenceFlow9" sourceRef="startEvent2" targetRef="userTask4"></sequenceFlow>
+      <sequenceFlow id="sequenceFlow10" sourceRef="userTask4" targetRef="exclusiveGateway1"></sequenceFlow>
+      <sequenceFlow id="sequenceFlow11" name="一般问题" sourceRef="exclusiveGateway1" targetRef="endEvent3">
+        <conditionExpression xsi:type="tFormalExpression">${"general".equals(problemLeve)}</conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow12" name="严重问题" sourceRef="exclusiveGateway1" targetRef="intermediateThrowEvent1">
+        <conditionExpression xsi:type="tFormalExpression">${"serious".equals(problemLeve)}</conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="sequenceFlow13" sourceRef="intermediateThrowEvent1" targetRef="endEvent3"></sequenceFlow>
+    </subProcess>
+    <parallelGateway id="parallelGateway1"></parallelGateway>
+    <userTask id="userTask2" name="一线客服处理"></userTask>
+    <endEvent id="endEvent2"></endEvent>
+    <inclusiveGateway id="inclusiveGateway1"></inclusiveGateway>
+    <sequenceFlow id="sequenceFlow1" sourceRef="startEvent1" targetRef="userTask1"></sequenceFlow>
+    <sequenceFlow id="sequenceFlow2" sourceRef="userTask1" targetRef="parallelGateway1"></sequenceFlow>
+    <sequenceFlow id="sequenceFlow3" sourceRef="parallelGateway1" targetRef="userTask2"></sequenceFlow>
+    <sequenceFlow id="sequenceFlow4" sourceRef="parallelGateway1" targetRef="endEvent1"></sequenceFlow>
+    <sequenceFlow id="sequenceFlow5" sourceRef="boundaryEvent1" targetRef="userTask3"></sequenceFlow>
+    <sequenceFlow id="sequenceFlow6" sourceRef="userTask2" targetRef="inclusiveGateway1"></sequenceFlow>
+    <sequenceFlow id="sequenceFlow7" sourceRef="userTask3" targetRef="inclusiveGateway1"></sequenceFlow>
+    <sequenceFlow id="sequenceFlow8" sourceRef="inclusiveGateway1" targetRef="endEvent2"></sequenceFlow>
+    <boundaryEvent id="boundaryEvent1" name="客服升级" attachedToRef="userTask2" cancelActivity="false">
+      <escalationEventDefinition escalationRef="customerServiceEscalation"></escalationEventDefinition>
+    </boundaryEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_IntermediateThrowingEscalationEventProcess">
+    <bpmndi:BPMNPlane bpmnElement="IntermediateThrowingEscalationEventProcess" id="BPMNPlane_IntermediateThrowingEscalationEventProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="60.0" y="305.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="150.0" y="280.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask3" id="BPMNShape_userTask3">
+        <omgdc:Bounds height="80.0" width="100.0" x="438.09541814857573" y="345.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="375.0" y="375.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="eventSubProcess1" id="BPMNShape_eventSubProcess1">
+        <omgdc:Bounds height="171.0" width="523.0" x="105.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startEvent2" id="BPMNShape_startEvent2">
+        <omgdc:Bounds height="30.0" width="30.0" x="135.0" y="85.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask4" id="BPMNShape_userTask4">
+        <omgdc:Bounds height="80.0" width="100.0" x="210.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent3" id="BPMNShape_endEvent3">
+        <omgdc:Bounds height="28.0" width="28.0" x="540.0" y="45.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="intermediateThrowEvent1" id="BPMNShape_intermediateThrowEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="435.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusiveGateway1" id="BPMNShape_exclusiveGateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="345.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelGateway1" id="BPMNShape_parallelGateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="300.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask2" id="BPMNShape_userTask2">
+        <omgdc:Bounds height="80.0" width="100.0" x="435.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent2" id="BPMNShape_endEvent2">
+        <omgdc:Bounds height="28.0" width="28.0" x="690.0" y="306.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="inclusiveGateway1" id="BPMNShape_inclusiveGateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="600.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryEvent1" id="BPMNShape_boundaryEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="474.8805982926447" y="275.1676825219817"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow5" id="BPMNEdge_sequenceFlow5" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="489.59827835226656" y="305.115087572907"></omgdi:waypoint>
+        <omgdi:waypoint x="488.84746079239375" y="345.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow6" id="BPMNEdge_sequenceFlow6" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.5" flowable:targetDockerY="20.5">
+        <omgdi:waypoint x="534.949999999968" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="620.5" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="620.5" y="300.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow3" id="BPMNEdge_sequenceFlow3" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="320.49999999999994" y="300.5"></omgdi:waypoint>
+        <omgdi:waypoint x="320.5" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="435.0" y="250.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow4" id="BPMNEdge_sequenceFlow4" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="320.49999999999994" y="339.43618804664726"></omgdi:waypoint>
+        <omgdi:waypoint x="320.5" y="389.0"></omgdi:waypoint>
+        <omgdi:waypoint x="375.0" y="389.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow1" id="BPMNEdge_sequenceFlow1" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="89.94999883049303" y="320.0"></omgdi:waypoint>
+        <omgdi:waypoint x="150.0" y="320.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow2" id="BPMNEdge_sequenceFlow2" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="249.95000000000002" y="320.0"></omgdi:waypoint>
+        <omgdi:waypoint x="300.0" y="320.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow11" id="BPMNEdge_sequenceFlow11" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="381.8503260869565" y="96.8913043478261"></omgdi:waypoint>
+        <omgdi:waypoint x="540.3245371274834" y="62.00002551859848"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow10" id="BPMNEdge_sequenceFlow10" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.5" flowable:targetDockerY="20.5">
+        <omgdi:waypoint x="309.94999999999794" y="100.2367298578199"></omgdi:waypoint>
+        <omgdi:waypoint x="345.40476190476045" y="100.4047619047619"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow9" id="BPMNEdge_sequenceFlow9" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="164.94999848995764" y="100.0"></omgdi:waypoint>
+        <omgdi:waypoint x="210.0" y="100.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow7" id="BPMNEdge_sequenceFlow7" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.5" flowable:targetDockerY="20.5">
+        <omgdi:waypoint x="538.0454181485746" y="385.0"></omgdi:waypoint>
+        <omgdi:waypoint x="620.5" y="385.0"></omgdi:waypoint>
+        <omgdi:waypoint x="620.5" y="339.4146350931677"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow8" id="BPMNEdge_sequenceFlow8" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="639.5526173285199" y="320.3855421686747"></omgdi:waypoint>
+        <omgdi:waypoint x="690.000243205338" y="320.08353165235735"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow13" id="BPMNEdge_sequenceFlow13" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="460.4700948785621" y="154.29286667852023"></omgdi:waypoint>
+        <omgdi:waypoint x="544.1952278168209" y="68.9576350462988"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow12" id="BPMNEdge_sequenceFlow12" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="15.0" flowable:targetDockerY="15.0">
+        <omgdi:waypoint x="376.24595908786046" y="108.70318791946308"></omgdi:waypoint>
+        <omgdi:waypoint x="438.0711015999807" y="155.89825284831778"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

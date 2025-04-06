@@ -1,0 +1,13 @@
+version: "3"
+services:
+  #Service for backend
+  analysis:
+    image: hub.goldenit.com.cn/yj/ncm-analysis
+    container_name: ncm-analysis
+    restart: always
+    ports:
+      - 8280:8080
+    environment:
+      - SPRING_PROFILES_ACTIVE=jx
+    volumes:
+      - ./analysis/logs:/app/logs

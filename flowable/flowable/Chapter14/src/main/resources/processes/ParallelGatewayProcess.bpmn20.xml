@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="parallelGatewayProcess" name="并行网关示例流程">
+    <startEvent id="startEvent1"/>
+    <!-- 定义并行网关 -->
+    <parallelGateway id="parallelGateway1"/>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="parallelGateway1"/>
+    <userTask id="userTask1" name="财务经理审批"/>
+    <userTask id="userTask2" name="直属上级审批"/>
+    <userTask id="userTask3" name="物料管理员审批"/>
+    <sequenceFlow id="seqFlow2" sourceRef="parallelGateway1" targetRef="userTask2"/>
+    <!-- 定义并行网关 -->
+    <parallelGateway id="parallelGateway2"/>
+    <userTask id="userTask4" name="部门主管审批"/>
+    <sequenceFlow id="seqFlow3" sourceRef="parallelGateway2" targetRef="userTask4"/>
+    <!-- 定义并行网关 -->
+    <parallelGateway id="parallelGateway3"/>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="seqFlow4" sourceRef="parallelGateway3" targetRef="endEvent1"/>
+    <sequenceFlow id="seqFlow5" sourceRef="parallelGateway1" targetRef="userTask1"/>
+    <sequenceFlow id="seqFlow6" sourceRef="parallelGateway1" targetRef="userTask3"/>
+    <sequenceFlow id="seqFlow7" sourceRef="userTask1" targetRef="parallelGateway2"/>
+    <sequenceFlow id="seqFlow8" sourceRef="userTask2" targetRef="parallelGateway2"/>
+    <sequenceFlow id="seqFlow9" sourceRef="userTask4" targetRef="parallelGateway3"/>
+    <sequenceFlow id="seqFlow10" sourceRef="userTask3" targetRef="parallelGateway3"/>
+    <textAnnotation id="textAnnotation1">
+      <text>parallelGateway1</text>
+    </textAnnotation>
+    <textAnnotation id="textAnnotation2">
+      <text>parallelGateway2</text>
+    </textAnnotation>
+    <textAnnotation id="textAnnotation3">
+      <text>parallelGateway3</text>
+    </textAnnotation>
+    <association id="association1" sourceRef="textAnnotation1" targetRef="parallelGateway1" associationDirection="None"/>
+    <association id="association2" sourceRef="textAnnotation2" targetRef="parallelGateway2" associationDirection="None"/>
+    <association id="association3" sourceRef="textAnnotation3" targetRef="parallelGateway3" associationDirection="None"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_parallelGatewayProcess">
+    <bpmndi:BPMNPlane bpmnElement="parallelGatewayProcess" id="BPMNPlane_parallelGatewayProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="110.0" y="195.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelGateway1" id="BPMNShape_parallelGateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="200.0" y="190.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="305.0" y="45.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask2" id="BPMNShape_userTask2">
+        <omgdc:Bounds height="80.0" width="100.0" x="305.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask3" id="BPMNShape_userTask3">
+        <omgdc:Bounds height="80.0" width="100.0" x="305.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelGateway2" id="BPMNShape_parallelGateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="465.0" y="123.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask4" id="BPMNShape_userTask4">
+        <omgdc:Bounds height="80.0" width="100.0" x="575.0" y="103.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelGateway3" id="BPMNShape_parallelGateway3">
+        <omgdc:Bounds height="40.0" width="40.0" x="721.0" y="225.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="815.0" y="231.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textAnnotation1" id="BPMNShape_textAnnotation1">
+        <omgdc:Bounds height="50.0" width="100.0" x="105.0" y="255.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textAnnotation2" id="BPMNShape_textAnnotation2">
+        <omgdc:Bounds height="50.0" width="100.0" x="511.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="association2" id="BPMNShape_association2">
+        <omgdc:Bounds height="69.00800714316912" width="20.93501340298394" x="489.93093079850803" y="57.73818392841544"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textAnnotation3" id="BPMNShape_textAnnotation3">
+        <omgdc:Bounds height="50.0" width="100.0" x="765.0" y="155.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="association3" id="BPMNShape_association3">
+        <omgdc:Bounds height="47.62968110942029" width="18.041545874780468" x="746.8229770626098" y="181.99765944528986"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="association1" id="BPMNShape_association1">
+        <omgdc:Bounds height="49.63626964118848" width="82.00774984196353" x="124.66800007901823" y="218.06467767940578"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow5" id="BPMNEdge_seqFlow5">
+        <omgdi:waypoint x="220.0" y="190.0"></omgdi:waypoint>
+        <omgdi:waypoint x="220.0" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="305.0" y="85.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow6" id="BPMNEdge_seqFlow6">
+        <omgdi:waypoint x="220.0" y="230.0"></omgdi:waypoint>
+        <omgdi:waypoint x="220.0" y="340.0"></omgdi:waypoint>
+        <omgdi:waypoint x="305.0" y="340.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="505.0" y="143.0"></omgdi:waypoint>
+        <omgdi:waypoint x="575.0" y="143.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4">
+        <omgdi:waypoint x="761.0" y="245.0"></omgdi:waypoint>
+        <omgdi:waypoint x="815.0" y="245.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="140.0" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="200.0" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="240.0" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="305.0" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow10" id="BPMNEdge_seqFlow10">
+        <omgdi:waypoint x="405.0" y="340.0"></omgdi:waypoint>
+        <omgdi:waypoint x="741.0" y="340.0"></omgdi:waypoint>
+        <omgdi:waypoint x="741.0" y="265.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow9" id="BPMNEdge_seqFlow9">
+        <omgdi:waypoint x="675.0" y="143.0"></omgdi:waypoint>
+        <omgdi:waypoint x="741.0" y="143.0"></omgdi:waypoint>
+        <omgdi:waypoint x="741.0" y="225.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow7" id="BPMNEdge_seqFlow7">
+        <omgdi:waypoint x="405.0" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="485.0" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="485.0" y="123.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow8" id="BPMNEdge_seqFlow8">
+        <omgdi:waypoint x="405.0" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="485.0" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="485.0" y="163.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association1" id="BPMNEdge_association1">
+        <omgdi:waypoint x="145.65217391304347" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="207.54098360655738" y="217.54098360655738"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association2" id="BPMNEdge_association2">
+        <omgdi:waypoint x="511.0" y="57.2962962962963"></omgdi:waypoint>
+        <omgdi:waypoint x="489.6551724137931" y="127.65517241379311"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association3" id="BPMNEdge_association3">
+        <omgdi:waypoint x="765.0" y="181.64"></omgdi:waypoint>
+        <omgdi:waypoint x="746.4945054945055" y="230.4945054945055"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

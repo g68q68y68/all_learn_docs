@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "fullname" . }}
+spec:
+  storageClassName: {{ quote .Values.pvc.storageClassName }} #nfs动态供给存储类的名字,可以使用kubectl get sc 查看到;
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+

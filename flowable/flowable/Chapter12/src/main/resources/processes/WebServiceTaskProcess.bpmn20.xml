@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef"
+             xmlns:tns="http://www.flowable.org/processdef"
+             xmlns:mobile="http://WebXml.com.cn/">
+
+  <!-- 这里的namespace是对应于wsdl中的namespace的，在这里定义一下方便后面使用 -->
+
+  <!--引入外部的wsdl文件中存储的数据，也就是我们的webservice生成的wsdl数据 -->
+  <import importType="http://schemas.xmlsoap.org/wsdl/"
+          location="http://ws.webxml.com.cn/WebServices/MobileCodeWS.asmx?wsdl"
+          namespace="http://WebXml.com.cn/" />
+  
+  <process id="webServiceTaskProcess" name="WebServiceTask示例流程">
+    <startEvent id="startEvent1"/>
+    <serviceTask id="webServiceTask1" name="获取手机号信息"
+          implementation="##WebService"
+          operationRef="getMobileCodeInfoOperation">
+      <!-- 要输入的参数 ，可以有多个 -->
+      <dataInputAssociation>
+        <sourceRef>myMobileCode</sourceRef>
+        <targetRef>mobileCode</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>myUserID</sourceRef>
+        <targetRef>userID</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation><!--输出的参数，只可以有一个 -->
+        <sourceRef>getMobileCodeInfoResult</sourceRef><!-- 输出变量在wsdl中名称 -->
+        <targetRef>mobileCodeInfoResult</targetRef><!-- 输出变量在流程中的名称 -->
+      </dataOutputAssociation>
+    </serviceTask>
+    <scriptTask id="scriptTask1" name="格式化处理" scriptFormat="javascript" flowable:autoStoreVariables="false">
+      <script>
+        var array1 = mobileCodeInfoResult.split("：");
+        var array2 = array1[1].split(" ");
+        execution.setVariable("province", array2[0]);
+        execution.setVariable("city", array2[1]);
+        execution.setVariable("type", array2[2]);
+      </script>
+    </scriptTask>    
+    <serviceTask id="mailTask1" name="邮件发送结果" flowable:type="mail">
+      <extensionElements>
+        <flowable:field name="from" stringValue="hebo824@163.com" />
+        <flowable:field name="to" expression="${userMail}" />
+        <flowable:field name="subject" expression="手机号信息查询结果" />
+        <flowable:field name="html">
+          <flowable:expression>
+            <![CDATA[
+              <html>
+                <body>
+                  用户<b>${userName}</b>你好，<br/>
+                  你查询的手机号<b>${myMobileCode}</b>的信息为：<br/>
+                  <table border="1">
+                  	<tr><td>卡号</td><td>${myMobileCode}</td></tr>
+                  	<tr><td>省份</td><td>${province}</td></tr>
+                  	<tr><td>城市</td><td>${city}</td></tr>
+                  	<tr><td>卡类型</td><td>${type}</td></tr>
+                  </table>	
+                </body>
+              </html>
+            ]]>
+          </flowable:expression>
+        </flowable:field>
+        <flowable:field name="charset">
+          <flowable:string><![CDATA[utf-8]]></flowable:string>
+        </flowable:field>
+      </extensionElements>
+    </serviceTask>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="webServiceTask1"/>
+    <sequenceFlow id="seqFlow2" sourceRef="webServiceTask1" targetRef="scriptTask1"/>
+    <sequenceFlow id="seqFlow3" sourceRef="scriptTask1" targetRef="mailTask1"/>
+    <sequenceFlow id="seqFlow4" sourceRef="mailTask1" targetRef="endEvent1"/>   
+  </process>
+
+  <interface id="getMobileCodeInfoInterface" name="获取手机号信息接口" implementationRef="mobile:MobileCodeWSSoap">
+    <operation id="getMobileCodeInfoOperation" name="获取手机号信息操作"
+               implementationRef="mobile:getMobileCodeInfo" >
+      <inMessageRef>tns:getMobileCodeInfoRequestMessage</inMessageRef>
+      <outMessageRef>tns:getMobileCodeInfoResponseMessage</outMessageRef>
+    </operation>
+  </interface>
+
+  <message id="getMobileCodeInfoRequestMessage" itemRef="tns:getMobileCodeInfoRequestItem" />
+  <message id="getMobileCodeInfoResponseMessage" itemRef="tns:getMobileCodeInfoResponseItem" />
+
+  <itemDefinition id="getMobileCodeInfoRequestItem" structureRef="mobile:getMobileCodeInfo" />
+  <itemDefinition id="getMobileCodeInfoResponseItem" structureRef="mobile:getMobileCodeInfoResponse" />
+
+  <itemDefinition id="myMobileCode" structureRef="string" />
+  <itemDefinition id="mobileCode" structureRef="string" />
+  <itemDefinition id="myUserID" structureRef="string" />
+  <itemDefinition id="userID" structureRef="string" />
+
+  <itemDefinition id="getMobileCodeInfoResult" structureRef="string" />
+  <itemDefinition id="mobileCodeInfoResult" structureRef="string" />
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_webServiceTaskProcess">
+    <bpmndi:BPMNPlane bpmnElement="webServiceTaskProcess" id="BPMNPlane_webServiceTaskProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="135.0" y="130.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="webServiceTask1" id="BPMNShape_webServiceTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="240.0" y="105.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailTask1" id="BPMNShape_mailTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="640.0" y="105.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="820.0" y="131.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scriptTask1" id="BPMNShape_scriptTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="441.0" y="105.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="165.0" y="145.0"/>
+        <omgdi:waypoint x="240.0" y="145.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="541.0" y="145.0"/>
+        <omgdi:waypoint x="640.0" y="145.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4">
+        <omgdi:waypoint x="740.0" y="145.0"/>
+        <omgdi:waypoint x="820.0" y="145.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="340.0" y="145.0"/>
+        <omgdi:waypoint x="441.0" y="145.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

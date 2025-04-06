@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 数据源配置 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- Flowable流程引擎 -->
+    <bean id="processEngineConfiguration"
+          class="com.bpm.example.demo1.cfg.CustomProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+
+        <!-- 配置自定义属性engineType -->
+        <property name="engineType" value="custom"/>
+        <!-- 配置自定义属性customTransactionManager -->
+        <property name="customTransactionManager" ref="transactionManager"/>
+    </bean>
+</beans>

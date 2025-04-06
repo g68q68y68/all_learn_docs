@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--数据源配置-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+    <!--Flowable流程引擎-->
+    <bean id="processEngineConfiguration"
+          class="org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+        <!-- 开启异步执行 -->
+        <property name="asyncExecutorActivate" value="true"/>
+        <!-- 配置自定义JobHandler -->
+        <property name="customJobHandlers">
+            <list>
+                <bean class="com.bpm.example.demo3.handler.TimeoutReminderJobHandler" />
+            </list>
+        </property>
+    </bean>
+</beans>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/test">
+  <process id="localizationProcess" name="系统上线流程">
+    <documentation>这是系统上线人工处理流程</documentation>
+    <extensionElements>
+      <flowable:localization locale="en" name="System Online Process">
+        <flowable:documentation>This is the manual handling process for system deployment</flowable:documentation>
+      </flowable:localization>
+      <flowable:localization locale="fr" name="Processus de mise en ligne du système">
+        <flowable:documentation>Il s'agit du processus de traitement manuel en ligne du système</flowable:documentation>
+      </flowable:localization>
+    </extensionElements>
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <userTask id="theTask" name="系统上线">
+      <documentation>该环节用于人工操作系统上线</documentation>
+      <extensionElements>
+        <flowable:localization locale="en" name="System Online">
+          <flowable:documentation>This stage is used for manual deployment of the operating system</flowable:documentation>
+        </flowable:localization>
+        <flowable:localization locale="fr" name="Système en ligne">
+          <flowable:documentation>Cette étape est utilisée pour la mise en ligne manuelle du système d'exploitation</flowable:documentation>
+        </flowable:localization>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
+  </process>
+</definitions>

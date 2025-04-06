@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <process id="FutureJavaDelegateServiceTaskProcess" name="FutureJavaDelegateServiceTaskProcess" isExecutable="true">
+    <startEvent id="startEvent1"/>
+    <serviceTask id="serviceTask1" name="ServiceTask1"
+                 flowable:class="com.bpm.example.servicetask.demo1.delegate.TestFutureJavaDelegate"/>
+    <sequenceFlow id="sequenceFlow1" sourceRef="startEvent1" targetRef="parallelGateway1"/>
+    <parallelGateway id="parallelGateway1"/>
+    <serviceTask id="serviceTask2" name="ServiceTask2"
+                 flowable:class="com.bpm.example.servicetask.demo1.delegate.TestFutureJavaDelegate"/>
+    <serviceTask id="serviceTask3" name="ServiceTask3"
+                 flowable:class="com.bpm.example.servicetask.demo1.delegate.TestFutureJavaDelegate"/>
+    <sequenceFlow id="sequenceFlow2" sourceRef="parallelGateway1" targetRef="serviceTask1"/>
+    <sequenceFlow id="sequenceFlow3" sourceRef="parallelGateway1" targetRef="serviceTask2"/>
+    <sequenceFlow id="sequenceFlow4" sourceRef="parallelGateway1" targetRef="serviceTask3"/>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="sequenceFlow5" sourceRef="serviceTask1" targetRef="endEvent1"/>
+    <sequenceFlow id="sequenceFlow6" sourceRef="serviceTask2" targetRef="endEvent1"/>
+    <sequenceFlow id="sequenceFlow7" sourceRef="serviceTask3" targetRef="endEvent1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_FutureJavaDelegateServiceTaskProcess">
+    <bpmndi:BPMNPlane bpmnElement="FutureJavaDelegateServiceTaskProcess" id="BPMNPlane_FutureJavaDelegateServiceTaskProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="90.0" y="235.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="serviceTask1" id="BPMNShape_serviceTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="300.0" y="105.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelGateway1" id="BPMNShape_parallelGateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="165.0" y="230.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="serviceTask2" id="BPMNShape_serviceTask2">
+        <omgdc:Bounds height="80.0" width="100.0" x="300.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="serviceTask3" id="BPMNShape_serviceTask3">
+        <omgdc:Bounds height="80.0" width="100.0" x="300.0" y="315.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="525.0" y="236.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow4" id="BPMNEdge_sequenceFlow4" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="197.08759754738017" y="257.8616171003717"></omgdi:waypoint>
+        <omgdi:waypoint x="300.0" y="323.2370820668693"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow1" id="BPMNEdge_sequenceFlow1" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="20.5" flowable:targetDockerY="20.5">
+        <omgdi:waypoint x="119.9496588110467" y="250.09285545292158"></omgdi:waypoint>
+        <omgdi:waypoint x="165.375" y="250.375"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow3" id="BPMNEdge_sequenceFlow3" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="204.50196526507995" y="250.4420731707317"></omgdi:waypoint>
+        <omgdi:waypoint x="299.999999999992" y="250.1518237082067"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow2" id="BPMNEdge_sequenceFlow2" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="197.6547222222222" y="242.6851851851852"></omgdi:waypoint>
+        <omgdi:waypoint x="299.99999999999994" y="177.03480243161093"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow7" id="BPMNEdge_sequenceFlow7" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="399.95" y="327.22222222222223"></omgdi:waypoint>
+        <omgdi:waypoint x="526.7595736061281" y="256.7759503252608"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow5" id="BPMNEdge_sequenceFlow5" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="399.95" y="172.75"></omgdi:waypoint>
+        <omgdi:waypoint x="526.7507491552249" y="243.19976372945138"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow6" id="BPMNEdge_sequenceFlow6" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="399.9499999998601" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="525.0" y="250.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

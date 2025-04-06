@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="timerBoundaryEventProcess" name="定时边界事件示例流程">
+    <startEvent id="startEvent1"/>
+    <userTask id="userTask1" name="客户投诉"/>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="userTask1"/>
+    <userTask id="userTask2" name="一线客服处理" flowable:businessCalendarName="custom" flowable:dueDate="PT10H"/>
+    <sequenceFlow id="seqFlow2" sourceRef="userTask1" targetRef="userTask2"/>
+    <userTask id="userTask3" name="结案"/>
+    <sequenceFlow id="seqFlow3" sourceRef="userTask2" targetRef="userTask3"/>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="seqFlow4" sourceRef="userTask3" targetRef="endEvent1"/>
+    <!-- 定义定时边界事件 -->
+    <boundaryEvent id="boundaryEvent1" attachedToRef="userTask2" cancelActivity="true">
+      <timerEventDefinition flowable:businessCalendarName="custom">
+        <timeDuration>PT15H</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <userTask id="userTask4" name="二线客服处理"/>
+    <sequenceFlow id="seqFlow5" sourceRef="boundaryEvent1" targetRef="userTask4"/>
+    <sequenceFlow id="seqFlow6" sourceRef="userTask4" targetRef="userTask3"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_timerBoundaryEventProcess">
+    <bpmndi:BPMNPlane bpmnElement="timerBoundaryEventProcess" id="BPMNPlane_timerBoundaryEventProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="175.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask2" id="BPMNShape_userTask2">
+        <omgdc:Bounds height="80.0" width="100.0" x="375.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask3" id="BPMNShape_userTask3">
+        <omgdc:Bounds height="80.0" width="100.0" x="570.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="795.0" y="164.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryEvent1" id="BPMNShape_boundaryEvent1">
+        <omgdc:Bounds height="31.0" width="31.0" x="409.5" y="202.76392090126356"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask4" id="BPMNShape_userTask4">
+        <omgdc:Bounds height="80.0" width="100.0" x="480.0" y="285.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow5" id="BPMNEdge_seqFlow5">
+        <omgdi:waypoint x="436.7201235404941" y="230.17044656581407"/>
+        <omgdi:waypoint x="490.65366836331486" y="285.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4">
+        <omgdi:waypoint x="670.0" y="178.0"/>
+        <omgdi:waypoint x="795.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="475.0" y="178.0"/>
+        <omgdi:waypoint x="570.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow6" id="BPMNEdge_seqFlow6">
+        <omgdi:waypoint x="554.4897959183673" y="285.0"/>
+        <omgdi:waypoint x="595.5102040816327" y="218.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="130.0" y="178.0"/>
+        <omgdi:waypoint x="175.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="275.0" y="178.0"/>
+        <omgdi:waypoint x="375.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

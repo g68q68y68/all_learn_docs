@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: dev
+  name: op-api-gateway
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+spec:
+  ingressClassName: "nginx"
+  tls:
+  - hosts:
+    - dev-op-api-gateway.hqtong.net
+    secretName: secret-tls-hqtong-net
+  rules:
+  - host: 'dev-op-api-gateway.hqtong.net'
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: op-api-gateway
+          servicePort: 80
+      - path: /data/static/MP_verify_G8VLC8cR0PBUXFby.txt
+        backend:
+          serviceName: op-api-gateway
+          servicePort: 80

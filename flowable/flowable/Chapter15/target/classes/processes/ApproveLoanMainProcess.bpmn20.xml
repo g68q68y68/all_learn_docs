@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="approveLoanMainProcess" name="审批贷款主流程">
+    <startEvent id="startEventOfMainProcess"/>
+    <userTask id="firstTaskOfMainProcess" name="贷款申请"/>
+    <sequenceFlow id="seqFlow1" sourceRef="startEventOfMainProcess" targetRef="firstTaskOfMainProcess"/>
+    <callActivity id="callActivity1" name="贷款额度审批" calledElement="approveLoanSubProcess" flowable:inheritVariables="false" flowable:businessKey="${subProcessBusinessKey}" flowable:processInstanceName="${subProcessBusinessName}" flowable:idVariableName="subProcessInstanceId">
+      <extensionElements>
+        <flowable:in source="lender" target="lender"/>
+        <flowable:in source="subProcessBusinessName" target="subProcessBusinessName"/>
+        <flowable:out source="loanAmount" target="loanAmount"/>
+      </extensionElements>
+    </callActivity>
+    <userTask id="secondTaskOfMainProcess" name="发放贷款"/>
+    <sequenceFlow id="seqFlow2" sourceRef="callActivity1" targetRef="secondTaskOfMainProcess"/>
+    <sequenceFlow id="seqFlow3" sourceRef="firstTaskOfMainProcess" targetRef="callActivity1"/>
+    <endEvent id="endEventOfMainProcess"/>
+    <sequenceFlow id="seqFlow4" sourceRef="secondTaskOfMainProcess" targetRef="endEventOfMainProcess"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_approveLoanMainProcess">
+    <bpmndi:BPMNPlane bpmnElement="approveLoanMainProcess" id="BPMNPlane_approveLoanMainProcess">
+      <bpmndi:BPMNShape bpmnElement="startEventOfMainProcess" id="BPMNShape_startEventOfMainProcess">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="90.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstTaskOfMainProcess" id="BPMNShape_firstTaskOfMainProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="180.0" y="65.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="callActivity1" id="BPMNShape_callActivity1">
+        <omgdc:Bounds height="80.0" width="100.0" x="345.0" y="65.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondTaskOfMainProcess" id="BPMNShape_secondTaskOfMainProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="520.0" y="65.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEventOfMainProcess" id="BPMNShape_endEventOfMainProcess">
+        <omgdc:Bounds height="28.0" width="28.0" x="665.0" y="91.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="445.0" y="105.0"/>
+        <omgdi:waypoint x="520.0" y="105.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="280.0" y="105.0"/>
+        <omgdi:waypoint x="345.0" y="105.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4">
+        <omgdi:waypoint x="620.0" y="105.0"/>
+        <omgdi:waypoint x="665.0" y="105.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="130.0" y="105.0"/>
+        <omgdi:waypoint x="180.0" y="105.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--数据源配置-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+    <!--activiti流程引擎-->
+    <bean id="processEngineConfiguration"
+          class="org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+        <property name="asyncExecutorActivate" value="true"/>
+        <property name="disableEventRegistry" value="false"/>
+        <property name="activityFontName" value="宋体"/>
+        <property name="labelFontName" value="宋体"/>
+        <property name="annotationFontName" value="宋体"/>
+        <property name="disableIdmEngine" value="true"/>
+
+
+        <property name="configurators">
+            <list>
+                <ref bean="dmnEngineConfigurator"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="dmnEngineConfiguration"
+          class="org.flowable.dmn.engine.impl.cfg.StandaloneDmnEngineConfiguration">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="dmnEngineConfigurator"
+          class="org.flowable.dmn.engine.configurator.DmnEngineConfigurator">
+        <property name="dmnEngineConfiguration" ref="dmnEngineConfiguration"/>
+    </bean>
+</beans>

@@ -1,0 +1,13 @@
+bpm:
+  engine-name: engine02
+server:
+  port: 8201
+spring:
+  cloud:
+    nacos:
+      discovery:
+        service: engine02-cluster
+  datasource:
+    url: jdbc:mysql://localhost:3306/flowable_engine02?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 123456

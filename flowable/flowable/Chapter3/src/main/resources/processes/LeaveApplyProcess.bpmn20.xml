@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="LeaveApplyProcess" name="请假申请流程" isExecutable="true">
+    <startEvent id="startEvent1" name="开始节点"/>
+    <userTask id="userTask1" name="请假申请" flowable:assignee="liuxiaopeng"/>
+    <userTask id="userTask2" name="上级审批" flowable:assignee="hebo"/>
+    <endEvent id="endEvent1" name="结束节点"/>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="userTask1"/>
+    <sequenceFlow id="seqFlow2" sourceRef="userTask1" targetRef="userTask2"/>
+    <sequenceFlow id="seqFlow3" sourceRef="userTask2" targetRef="endEvent1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_LeaveApplyProcess">
+    <bpmndi:BPMNPlane bpmnElement="LeaveApplyProcess" id="BPMNPlane_LeaveApplyProcess">
+      <bpmndi:BPMNShape id="shape-fc72f248-1b64-4c30-a20f-f4efd99eeb16" bpmnElement="startEvent1">
+        <omgdc:Bounds x="-85.0" y="-11.5" width="30.0" height="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape-198039ac-cfb0-49af-bedf-d732c1fe639a" bpmnElement="userTask1">
+        <omgdc:Bounds x="-25.0" y="-19.0" width="65.0" height="45.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape-5b03e6f0-9654-453f-b9bc-74133c8df038" bpmnElement="userTask2">
+        <omgdc:Bounds x="80.0" y="-19.0" width="70.0" height="45.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape-8f1e7bfb-f3b0-4387-add4-46b8eaf11533" bpmnElement="endEvent1">
+        <omgdc:Bounds x="190.0" y="-11.5" width="30.0" height="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-01e2fedd-4586-4907-a8e3-dcbe2df31f19" bpmnElement="seqFlow1">
+        <omgdi:waypoint x="-55.0" y="3.5"/>
+        <omgdi:waypoint x="-25.0" y="3.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge-404695c2-380b-4b02-b697-553168d4b940" bpmnElement="seqFlow2">
+        <omgdi:waypoint x="40.0" y="3.5"/>
+        <omgdi:waypoint x="80.0" y="3.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge-d02f2671-411e-4744-9605-05c2fe8f44e5" bpmnElement="seqFlow3">
+        <omgdi:waypoint x="150.0" y="3.5"/>
+        <omgdi:waypoint x="190.0" y="3.5"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <process id="conditionalIntermediateCatchingEventProcess" name="条件中间事件示例流程">
+    <startEvent id="startEvent1"/>
+    <userTask id="userTask1" name="提名"/>
+    <intermediateCatchEvent id="intermediateCatchEvent1" name="投票数是否达标">
+      <conditionalEventDefinition>
+        <condition>${voteNum>=5}</condition>
+      </conditionalEventDefinition>
+    </intermediateCatchEvent>
+    <userTask id="userTask2" name="材料审核"/>
+    <endEvent id="endEvent1"/>
+    <userTask id="userTask3" name="补充材料"/>
+    <boundaryEvent id="boundaryEvent1" name="材料是否齐全" attachedToRef="userTask2" cancelActivity="true">
+      <conditionalEventDefinition>
+        <condition>${materialState==false}</condition>
+      </conditionalEventDefinition>
+    </boundaryEvent>
+    <userTask id="userTask4" name="结果公示"/>
+    <subProcess id="eventSubProcess1" name="发证事件子流程" triggeredByEvent="true">
+      <startEvent id="startEvent2" isInterrupting="false">
+        <conditionalEventDefinition>
+          <condition>${"success".equals(execution.getVariable("result"))}</condition>
+        </conditionalEventDefinition>
+      </startEvent>
+      <userTask id="userTask5" name="制作证书"/>
+      <endEvent id="endEvent2"/>
+      <userTask id="userTask6" name="颁发证书"/>
+      <sequenceFlow id="seqFlow8" sourceRef="startEvent2" targetRef="userTask5"/>
+      <sequenceFlow id="seqFlow9" sourceRef="userTask5" targetRef="userTask6"/>
+      <sequenceFlow id="seqFlow10" sourceRef="userTask6" targetRef="endEvent2"/>
+    </subProcess>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="userTask1"/>
+    <sequenceFlow id="seqFlow2" sourceRef="userTask1" targetRef="intermediateCatchEvent1"/>
+    <sequenceFlow id="seqFlow3" sourceRef="intermediateCatchEvent1" targetRef="userTask2"/>
+    <sequenceFlow id="seqFlow4" sourceRef="userTask2" targetRef="userTask4"/>
+    <sequenceFlow id="seqFlow5" sourceRef="userTask4" targetRef="endEvent1"/>
+    <sequenceFlow id="seqFlow6" sourceRef="boundaryEvent1" targetRef="userTask3"/>
+    <sequenceFlow id="seqFlow7" sourceRef="userTask3" targetRef="userTask2"/>
+    <textAnnotation id="textAnnotation1">
+      <text>等到投票数达到5</text>
+    </textAnnotation>
+    <association id="association1" sourceRef="intermediateCatchEvent1" targetRef="textAnnotation1" associationDirection="None"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_conditionalIntermediateCatchingEventProcess">
+    <bpmndi:BPMNPlane bpmnElement="conditionalIntermediateCatchingEventProcess" id="BPMNPlane_conditionalIntermediateCatchingEventProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="60.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="150.0" y="95.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="intermediateCatchEvent1" id="BPMNShape_intermediateCatchEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="315.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask2" id="BPMNShape_userTask2">
+        <omgdc:Bounds height="80.0" width="100.0" x="435.0" y="95.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="795.0" y="121.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask3" id="BPMNShape_userTask3">
+        <omgdc:Bounds height="80.0" width="99.99999999999989" x="435.0" y="235.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textAnnotation1" id="BPMNShape_textAnnotation1">
+        <omgdc:Bounds height="50.0" width="100.0" x="390.0" y="15.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryEvent1" id="BPMNShape_boundaryEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="466.3274614926673" y="160.99601144910588"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask4" id="BPMNShape_userTask4">
+        <omgdc:Bounds height="80.0" width="100.0" x="615.0" y="95.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="eventSubProcess1" id="BPMNShape_eventSubProcess1">
+        <omgdc:Bounds height="145.0" width="512.0" x="195.0" y="330.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startEvent2" id="BPMNShape_startEvent2">
+        <omgdc:Bounds height="30.0" width="30.0" x="240.0" y="401.01487641175027"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask5" id="BPMNShape_userTask5">
+        <omgdc:Bounds height="80.0" width="100.0" x="330.0" y="376.01487641175027"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent2" id="BPMNShape_endEvent2">
+        <omgdc:Bounds height="28.0" width="28.0" x="651.0" y="402.01487641175027"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask6" id="BPMNShape_userTask6">
+        <omgdc:Bounds height="80.0" width="100.0" x="480.0" y="376.01487641175027"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow5" id="BPMNEdge_seqFlow5" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="714.9499999999827" y="135.0"></omgdi:waypoint>
+        <omgdi:waypoint x="795.0" y="135.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow6" id="BPMNEdge_seqFlow6" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="46.32746149266728" flowable:targetDockerY="17.55378561662036">
+        <omgdi:waypoint x="481.3274614926673" y="190.94600833303963"></omgdi:waypoint>
+        <omgdi:waypoint x="481.3274614926673" y="235.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="344.9499992392744" y="135.0"></omgdi:waypoint>
+        <omgdi:waypoint x="434.9999999999684" y="135.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="34.71771100468868" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="534.9499999999639" y="135.0"></omgdi:waypoint>
+        <omgdi:waypoint x="615.0" y="135.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="89.94999883049303" y="135.0"></omgdi:waypoint>
+        <omgdi:waypoint x="149.99999999995785" y="135.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="15.0" flowable:targetDockerY="15.0">
+        <omgdi:waypoint x="249.949999999978" y="135.0"></omgdi:waypoint>
+        <omgdi:waypoint x="315.0" y="135.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow10" id="BPMNEdge_seqFlow10" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="579.95" y="416.01487641175027"></omgdi:waypoint>
+        <omgdi:waypoint x="651.0" y="416.01487641175027"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow9" id="BPMNEdge_seqFlow9" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="429.95000000000005" y="416.01487641175027"></omgdi:waypoint>
+        <omgdi:waypoint x="479.99999999993634" y="416.01487641175027"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association1" id="BPMNEdge_association1" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="1.0" flowable:targetDockerY="24.0">
+        <omgdi:waypoint x="338.01879440771734" y="122.33805181227588"></omgdi:waypoint>
+        <omgdi:waypoint x="390.0" y="40.495081967213096"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow7" id="BPMNEdge_seqFlow7" flowable:sourceDockerX="49.99999999999997" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="435.0" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="385.41668701171875" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="385.41668701171875" y="135.0"></omgdi:waypoint>
+        <omgdi:waypoint x="435.0" y="135.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow8" id="BPMNEdge_seqFlow8" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="269.94999883049303" y="416.01487641175027"></omgdi:waypoint>
+        <omgdi:waypoint x="330.0" y="416.01487641175027"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

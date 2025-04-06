@@ -1,0 +1,9 @@
+bpm:
+  engine-name: engine01
+server:
+  port: 8101
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/activiti_engine01?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 123456

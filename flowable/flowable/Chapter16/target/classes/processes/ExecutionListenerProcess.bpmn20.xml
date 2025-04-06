@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="executionListenerProcess" name="执行监听器示例流程">
+    <extensionElements>
+      <!--  通过expression属性配置监听器  -->
+      <flowable:executionListener event="start" expression="${myProcessExecutionListenerBean.printInfo(execution)}"/>
+      <!--  通过expression属性配置监听器  -->
+      <flowable:executionListener event="end" expression="${myProcessExecutionListenerBean.printInfo(execution)}"/>
+    </extensionElements>
+    <startEvent id="startEvent">
+      <extensionElements>
+        <!--  通过脚本配置监听器  -->
+        <flowable:executionListener event="start" class="org.flowable.engine.impl.bpmn.listener.ScriptExecutionListener">
+          <flowable:field name="script">
+            <flowable:string>
+              def activityId = execution.getCurrentFlowElement().getId();
+              def eventName = execution.getEventName();
+              println("通过脚本指定的监听器：Id为" + activityId + "的开始事件的" + eventName + "事件触发");
+              return activityId + "_" + eventName;
+            </flowable:string>
+          </flowable:field>
+          <flowable:field name="language" stringValue="groovy"/>
+          <flowable:field name="resultVariable" stringValue="nodeEvent1"/>
+        </flowable:executionListener>
+        <!--  通过脚本配置监听器  -->
+        <flowable:executionListener event="end" class="org.flowable.engine.impl.bpmn.listener.ScriptExecutionListener">
+          <flowable:field name="script">
+            <flowable:string>
+              def activityId = execution.getCurrentFlowElement().getId();
+              def eventName = execution.getEventName();
+              println("通过脚本指定的监听器：Id为" + activityId + "的开始事件的" + eventName + "事件触发");
+              return activityId + "_" + eventName;
+            </flowable:string>
+          </flowable:field>
+          <flowable:field name="language" stringValue="groovy"/>
+          <flowable:field name="resultVariable" stringValue="nodeEvent2"/>
+        </flowable:executionListener>
+      </extensionElements>
+    </startEvent>
+    <userTask id="userTask" name="数据上报">
+      <extensionElements>
+        <!--  通过class属性配置监听器 -->
+        <flowable:executionListener event="start" class="com.bpm.example.executionlistener.demo.listener.MyUserTaskExecutionListener">
+          <flowable:field name="fixedValue" stringValue="这是userTask的start事件注入的固定值" />
+          <flowable:field name="dynamicValue" expression="${nowTime1}" />
+        </flowable:executionListener>
+        <!--  通过delegateExpression属性配置监听器  -->
+        <flowable:executionListener event="end" delegateExpression="${myUserTaskExecutionListenerBean}">
+          <flowable:field name="fixedValue" stringValue="这是userTask的end事件注入的固定值" />
+          <flowable:field name="dynamicValue" expression="${nowTime2}" />
+        </flowable:executionListener>
+      </extensionElements>
+    </userTask>
+    <endEvent id="endEvent">
+      <extensionElements>
+        <!--  通过脚本配置监听器  -->
+        <flowable:executionListener event="start" class="org.flowable.engine.impl.bpmn.listener.ScriptExecutionListener">
+          <flowable:field name="script">
+            <flowable:string>
+              def activityId = execution.getCurrentFlowElement().getId();
+              def eventName = execution.getEventName();
+              println("通过脚本指定的监听器：Id为" + activityId + "的结束事件的" + eventName + "事件触发");
+              return activityId + "_" + eventName;
+            </flowable:string>
+          </flowable:field>
+          <flowable:field name="language" stringValue="groovy"/>
+          <flowable:field name="resultVariable" stringValue="nodeEvent3"/>
+        </flowable:executionListener>
+        <!--  通过脚本配置监听器  -->
+        <flowable:executionListener event="end" class="org.flowable.engine.impl.bpmn.listener.ScriptExecutionListener">
+          <flowable:field name="script">
+            <flowable:string>
+              def activityId = execution.getCurrentFlowElement().getId();
+              def eventName = execution.getEventName();
+              println("通过脚本指定的监听器：Id为"  + activityId + "的结束事件的" + eventName + "事件触发");
+              return activityId + "_" + eventName;
+            </flowable:string>
+          </flowable:field>
+          <flowable:field name="language" stringValue="groovy"/>
+          <flowable:field name="resultVariable" stringValue="nodeEvent4"/>
+        </flowable:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent" targetRef="userTask">
+      <extensionElements>
+        <!--  通过class属性配置监听器  -->
+        <flowable:executionListener event="start" class="com.bpm.example.executionlistener.demo.listener.MySequenceFlowExecutionListener"/>
+        <flowable:executionListener event="take" class="com.bpm.example.executionlistener.demo.listener.MySequenceFlowExecutionListener"/>
+        <flowable:executionListener event="end" class="com.bpm.example.executionlistener.demo.listener.MySequenceFlowExecutionListener"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="seqFlow2" sourceRef="userTask" targetRef="endEvent">
+      <extensionElements>
+        <!--  通过delegateExpression属性配置监听器  -->
+        <flowable:executionListener event="start" delegateExpression="${mySequenceFlowExecutionListenerBean}"/>
+        <flowable:executionListener event="take" delegateExpression="${mySequenceFlowExecutionListenerBean}"/>
+        <flowable:executionListener event="end" delegateExpression="${mySequenceFlowExecutionListenerBean}"/>
+      </extensionElements>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_executionListenerProcess">
+    <bpmndi:BPMNPlane bpmnElement="executionListenerProcess" id="BPMNPlane_executionListenerProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="105.0" y="105.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask" id="BPMNShape_userTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="255.0" y="80.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="480.0" y="106.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="135.0" y="120.0"/>
+        <omgdi:waypoint x="255.0" y="120.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="355.0" y="120.0"/>
+        <omgdi:waypoint x="480.0" y="120.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

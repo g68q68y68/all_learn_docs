@@ -1,0 +1,13 @@
+.idea
+*.iml
+node_modules/
+public/
+src/
+logs/
+opt/
+target/classes/
+target/generated-*/
+target/maven-*/
+target/test-*/
+.env*
+yarn.lock

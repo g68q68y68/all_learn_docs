@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="aa" name="aa" isExecutable="true">
+    <startEvent id="sid-5238c837-b466-4c57-a670-7aa185aeea43"/>
+    <userTask id="sid-bcf03f08-cc89-4ffa-a7fc-0b81edc5980a"/>
+    <sequenceFlow id="sid-b88119fc-97a2-4b7f-8e98-84036b351206" sourceRef="sid-5238c837-b466-4c57-a670-7aa185aeea43" targetRef="sid-bcf03f08-cc89-4ffa-a7fc-0b81edc5980a"/>
+    <boundaryEvent id="sid-fadd80c9-2d3b-4883-88c4-a4955045dd3a" attachedToRef="sid-bcf03f08-cc89-4ffa-a7fc-0b81edc5980a">
+      <messageEventDefinition/>
+    </boundaryEvent>
+    <intermediateCatchEvent id="sid-100c9e07-3b1c-4ed0-bb8a-2224cdfc68c0">
+      <messageEventDefinition/>
+    </intermediateCatchEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_aa">
+    <bpmndi:BPMNPlane bpmnElement="aa" id="BPMNPlane_aa">
+      <bpmndi:BPMNShape id="shape-4e19d745-6119-4407-953b-cdb042b2505b" bpmnElement="sid-5238c837-b466-4c57-a670-7aa185aeea43">
+        <omgdc:Bounds x="-90.0" y="-90.0" width="30.0" height="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape-e7540d6b-bcfb-4502-af72-c990ed60b48a" bpmnElement="sid-bcf03f08-cc89-4ffa-a7fc-0b81edc5980a">
+        <omgdc:Bounds x="-50.0" y="-20.0" width="65.0" height="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-bcc49fb7-bed9-4cf4-b55b-041090ed8eb3" bpmnElement="sid-b88119fc-97a2-4b7f-8e98-84036b351206">
+        <omgdi:waypoint x="-67.5" y="-60.0"/>
+        <omgdi:waypoint x="-33.75" y="-20.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="shape-5d56c0ca-c0d0-4348-8a54-ae953146a1c5" bpmnElement="sid-fadd80c9-2d3b-4883-88c4-a4955045dd3a">
+        <omgdc:Bounds x="-27.5" y="-5.0" width="30.0" height="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape-4f2d5a0b-cda8-4ac3-9fa9-1645cef6edf0" bpmnElement="sid-100c9e07-3b1c-4ed0-bb8a-2224cdfc68c0">
+        <omgdc:Bounds x="-15.0" y="80.0" width="30.0" height="30.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,5 @@
+应用访问方法：
+1、通过kubectl get svc 查看NodePort端口
+2、若没有svc，可以使用kubectl get ingress查看访问域名
+
+

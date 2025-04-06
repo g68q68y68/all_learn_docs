@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="approveLoanSubProcess" name="审批贷款子流程">
+    <startEvent id="startEventOfSubProcess"/>
+    <userTask id="firstTaskOfSubProcess" name="审批贷款额度"/>
+    <sequenceFlow id="seqFlow1" sourceRef="startEventOfSubProcess" targetRef="firstTaskOfSubProcess"/>
+    <exclusiveGateway id="exclusiveGatewayOfSubProcess"/>
+    <sequenceFlow id="seqFlow2" sourceRef="firstTaskOfSubProcess" targetRef="exclusiveGatewayOfSubProcess"/>
+    <userTask id="secondTaskOfSubProcess" name="复核贷款额度"/>
+    <endEvent id="endEventOfSubProcess"/>
+    <sequenceFlow id="seqFlow3" sourceRef="secondTaskOfSubProcess" targetRef="endEventOfSubProcess"/>
+    <sequenceFlow id="seqFlow4" name="贷款额度小于等于100万元" sourceRef="exclusiveGatewayOfSubProcess" targetRef="endEventOfSubProcess">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${loanAmount<=1000000}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="seqFlow5" name="贷款额度大于100万元" sourceRef="exclusiveGatewayOfSubProcess" targetRef="secondTaskOfSubProcess">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${loanAmount>1000000}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_approveLoanSubProcess">
+    <bpmndi:BPMNPlane bpmnElement="approveLoanSubProcess" id="BPMNPlane_approveLoanSubProcess">
+      <bpmndi:BPMNShape bpmnElement="startEventOfSubProcess" id="BPMNShape_startEventOfSubProcess">
+        <omgdc:Bounds height="30.0" width="30.0" x="75.0" y="120.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstTaskOfSubProcess" id="BPMNShape_firstTaskOfSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="150.0" y="95.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusiveGatewayOfSubProcess" id="BPMNShape_exclusiveGatewayOfSubProcess">
+        <omgdc:Bounds height="40.0" width="40.0" x="295.0" y="115.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondTaskOfSubProcess" id="BPMNShape_secondTaskOfSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="420.0" y="180.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEventOfSubProcess" id="BPMNShape_endEventOfSubProcess">
+        <omgdc:Bounds height="28.0" width="28.0" x="570.0" y="121.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow5" id="BPMNEdge_seqFlow5">
+        <omgdi:waypoint x="315.5" y="154.5"/>
+        <omgdi:waypoint x="315.5" y="220.0"/>
+        <omgdi:waypoint x="420.0" y="220.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="250.0" y="135.2164502164502"/>
+        <omgdi:waypoint x="295.4130434782609" y="135.41304347826087"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4">
+        <omgdi:waypoint x="334.535447761194" y="135.46455223880596"/>
+        <omgdi:waypoint x="570.0000242743907" y="135.02607071829723"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="520.0" y="220.0"/>
+        <omgdi:waypoint x="584.0" y="220.0"/>
+        <omgdi:waypoint x="584.0" y="149.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="105.0" y="135.0"/>
+        <omgdi:waypoint x="150.0" y="135.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

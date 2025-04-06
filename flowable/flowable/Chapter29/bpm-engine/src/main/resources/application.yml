@@ -1,0 +1,41 @@
+server:
+  port: 8101
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/activiti_engine03?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    driverClassName: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 1000ms
+    lettuce:
+      pool:
+        max-active: 50
+        min-idle: 10
+        max-idle: 10
+        max-wait: 1000ms
+
+service:
+  process-modeling-service:
+    url: http://localhost:9001
+
+pika:
+  host: 127.0.0.1
+  port: 9221
+  timeout: 1000ms
+  connect-timeout: 1000ms
+  jedis:
+    pool:
+      max-active: 50
+      min-idle: 5
+      max-idle: 10
+      max-wait: 1000ms
+
+bpm:
+  process-definitions:
+    cache:
+      key: bpm#process#definition

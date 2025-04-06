@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <process id="FourNodesProcess" name="四个节点的流程" isExecutable="true">
+    <startEvent id="startEvent1"/>
+    <userTask id="firstNode" name="节点1"/>
+    <userTask id="secondNode" name="节点2"/>
+    <userTask id="thirdNode" name="节点3"/>
+    <userTask id="fourthNode" name="节点4"/>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="sequenceFlow1" sourceRef="startEvent1" targetRef="firstNode"/>
+    <sequenceFlow id="sequenceFlow2" sourceRef="firstNode" targetRef="secondNode"/>
+    <sequenceFlow id="sequenceFlow3" sourceRef="secondNode" targetRef="thirdNode"/>
+    <sequenceFlow id="sequenceFlow4" sourceRef="thirdNode" targetRef="fourthNode"/>
+    <sequenceFlow id="sequenceFlow5" sourceRef="fourthNode" targetRef="endEvent1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_FourNodesProcess">
+    <bpmndi:BPMNPlane bpmnElement="FourNodesProcess" id="BPMNPlane_FourNodesProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="75.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstNode" id="BPMNShape_firstNode">
+        <omgdc:Bounds height="80.0" width="100.0" x="180.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondNode" id="BPMNShape_secondNode">
+        <omgdc:Bounds height="80.0" width="100.0" x="345.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="thirdNode" id="BPMNShape_thirdNode">
+        <omgdc:Bounds height="80.0" width="100.0" x="510.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="fourthNode" id="BPMNShape_fourthNode">
+        <omgdc:Bounds height="80.0" width="100.0" x="675.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="850.0" y="164.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow5" id="BPMNEdge_sequenceFlow5">
+        <omgdi:waypoint x="775.0" y="178.0"/>
+        <omgdi:waypoint x="850.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow3" id="BPMNEdge_sequenceFlow3">
+        <omgdi:waypoint x="445.0" y="178.0"/>
+        <omgdi:waypoint x="510.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow4" id="BPMNEdge_sequenceFlow4">
+        <omgdi:waypoint x="610.0" y="178.0"/>
+        <omgdi:waypoint x="675.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow1" id="BPMNEdge_sequenceFlow1">
+        <omgdi:waypoint x="105.0" y="178.0"/>
+        <omgdi:waypoint x="180.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow2" id="BPMNEdge_sequenceFlow2">
+        <omgdi:waypoint x="280.0" y="178.0"/>
+        <omgdi:waypoint x="345.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

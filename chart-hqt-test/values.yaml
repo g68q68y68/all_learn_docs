@@ -1,0 +1,75 @@
+##deployment配置##
+name: energy-order-api
+
+label:
+  #project: web
+  #app: nginx
+  app: energy-order-api
+  layer: svc
+
+replicaCount: 1
+
+image:
+  repository: dev-re.hq.net/hqt-registry-dev
+#设置镜像的tag，默认为"latest"
+  tag: "D-130"
+
+prestop:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 300m
+    memory: 682Mi
+
+livenessProbe:
+  httpGet:
+    path: /hqt_actuator/info
+    port: 80
+  initialDelaySeconds: 60 #pod启动多长时间后开始去探测;
+  periodSeconds: 5 #每隔多长时间去探测一次；
+  failureThreshold: 6
+readinessProbe:
+  httpGet:
+    path: /hqt_actuator/info
+    port: 80
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  failureThreshold: 6
+
+#是否使用数据持久化【"true"为开启,"false"为关闭】
+volumes:
+  enabled: true
+
+#是否使用亲和性配置【"true"为开启,"false"为关闭】
+affinity: 
+  enabled: false
+
+
+###Pvc配置###
+pvc: 
+  storageClassName: managed-nfs-storage
+
+
+###Service配置###
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+
+###Ingress配置###
+#部署当前服务是否需要ingress，若需要则将enable设置为true
+ingress:
+  enabled: false 
+  #部署当前服务是否需要注释，若需要则将"{}"删除，在下面配置所需注释
+  annotations: {} 
+    #nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+  host: chart-example.local
+  path: ""
+  #部署当前服务是否需要tls，若需要则将"{}"删除，在下面配置tls的secrets资源名称
+  tls: {}
+    #secretName: chart-example-tls

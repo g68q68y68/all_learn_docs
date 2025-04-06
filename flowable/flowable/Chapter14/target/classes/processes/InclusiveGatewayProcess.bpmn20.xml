@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="inclusiveGatewayProcess" name="包容网关示例流程">
+    <startEvent id="startEvent1"/>
+    <userTask id="applyTask" name="请假申请"/>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="applyTask"/>
+    <!-- 定义包容网关 -->
+    <inclusiveGateway id="inclusiveGateway1"/>
+    <sequenceFlow id="seqFlow2" sourceRef="applyTask" targetRef="inclusiveGateway1"/>
+    <userTask id="internTask" name="HR实习生审批"/>
+    <userTask id="assistantTask" name="HR助理审批"/>
+    <userTask id="superiorTask" name="直属领导审批"/>
+    <!-- 定义包容网关 -->
+    <inclusiveGateway id="inclusiveGateway2"/>
+    <sequenceFlow id="seqFlow3" sourceRef="internTask" targetRef="inclusiveGateway2"/>
+    <sequenceFlow id="seqFlow4" sourceRef="assistantTask" targetRef="inclusiveGateway2"/>
+    <userTask id="managerTask" name="HR经理审批"/>
+    <sequenceFlow id="seqFlow5" sourceRef="inclusiveGateway2" targetRef="managerTask"/>
+    <!-- 定义包容网关 -->
+    <inclusiveGateway id="inclusiveGateway3"/>
+    <sequenceFlow id="seqFlow6" sourceRef="inclusiveGateway3" targetRef="endEvent1"/>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="seqFlow7" sourceRef="managerTask" targetRef="inclusiveGateway3"/>
+    <sequenceFlow id="seqFlow8" sourceRef="superiorTask" targetRef="inclusiveGateway3"/>
+    <sequenceFlow id="seqFlow9" name="请假天数&lt;3" sourceRef="inclusiveGateway1" targetRef="internTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${leaveDays<3}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="seqFlow10" name="请假天数≥3" sourceRef="inclusiveGateway1" targetRef="assistantTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${leaveDays>=3}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="seqFlow11" name="请假天数≥1" sourceRef="inclusiveGateway1" targetRef="superiorTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${leaveDays>=1}]]></conditionExpression>
+    </sequenceFlow>
+    <textAnnotation id="textAnnotation1">
+      <text>inclusiveGateway1</text>
+    </textAnnotation>
+    <association id="association1" sourceRef="textAnnotation1" targetRef="inclusiveGateway1" associationDirection="None"/>
+    <textAnnotation id="textAnnotation2">
+      <text>inclusiveGateway2</text>
+    </textAnnotation>
+    <association id="association2" sourceRef="textAnnotation2" targetRef="inclusiveGateway2" associationDirection="None"/>
+    <textAnnotation id="textAnnotation3">
+      <text>inclusiveGateway3</text>
+    </textAnnotation>
+    <association id="association3" sourceRef="textAnnotation3" targetRef="inclusiveGateway3" associationDirection="None"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_inclusiveGatewayProcess">
+    <bpmndi:BPMNPlane bpmnElement="inclusiveGatewayProcess" id="BPMNPlane_inclusiveGatewayProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="60.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="applyTask" id="BPMNShape_applyTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="150.0" y="185.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="inclusiveGateway1" id="BPMNShape_inclusiveGateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="300.0" y="205.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="internTask" id="BPMNShape_internTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="420.0" y="55.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="assistantTask" id="BPMNShape_assistantTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="420.0" y="185.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="superiorTask" id="BPMNShape_superiorTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="420.0" y="315.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="inclusiveGateway2" id="BPMNShape_inclusiveGateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="563.0" y="145.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="managerTask" id="BPMNShape_managerTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="645.0" y="125.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="inclusiveGateway3" id="BPMNShape_inclusiveGateway3">
+        <omgdc:Bounds height="40.0" width="40.0" x="780.0" y="245.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="915.0" y="251.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textAnnotation1" id="BPMNShape_textAnnotation1">
+        <omgdc:Bounds height="46.0" width="126.0" x="180.0" y="109.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="association1" id="BPMNShape_association1">
+        <omgdc:Bounds height="67.23021891474454" width="108.04017698606751" x="199.829282125721" y="150.22130289668416"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textAnnotation2" id="BPMNShape_textAnnotation2">
+        <omgdc:Bounds height="50.0" width="114.0" x="615.0" y="55.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="association2" id="BPMNShape_association2">
+        <omgdc:Bounds height="68.00774976150689" width="26.095997001508522" x="588.7723139992457" y="81.94925011924656"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textAnnotation3" id="BPMNShape_textAnnotation3">
+        <omgdc:Bounds height="51.0" width="114.0" x="825.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="association3" id="BPMNShape_association3">
+        <omgdc:Bounds height="43.55240167821967" width="18.710549299962167" x="806.0822253500189" y="207.2900491608902"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow7" id="BPMNEdge_seqFlow7">
+        <omgdi:waypoint x="745.0" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="800.0" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="800.0" y="245.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow8" id="BPMNEdge_seqFlow8">
+        <omgdi:waypoint x="520.0" y="355.0"></omgdi:waypoint>
+        <omgdi:waypoint x="800.0" y="355.0"></omgdi:waypoint>
+        <omgdi:waypoint x="800.0" y="285.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4">
+        <omgdi:waypoint x="520.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="583.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="583.0" y="185.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow6" id="BPMNEdge_seqFlow6">
+        <omgdi:waypoint x="820.0" y="265.0"></omgdi:waypoint>
+        <omgdi:waypoint x="915.0" y="265.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="250.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="300.0" y="225.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association1" id="BPMNEdge_association1">
+        <omgdi:waypoint x="207.50873474597444" y="155.0"></omgdi:waypoint>
+        <omgdi:waypoint x="307.67160005193244" y="217.32839994806756"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="520.0" y="95.0"></omgdi:waypoint>
+        <omgdi:waypoint x="583.0" y="95.0"></omgdi:waypoint>
+        <omgdi:waypoint x="583.0" y="145.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association3" id="BPMNEdge_association3">
+        <omgdi:waypoint x="825.0" y="206.80769230769232"></omgdi:waypoint>
+        <omgdi:waypoint x="806.0101710587147" y="251.01017105871475"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow5" id="BPMNEdge_seqFlow5">
+        <omgdi:waypoint x="603.0" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="645.0" y="165.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow11" id="BPMNEdge_seqFlow11">
+        <omgdi:waypoint x="320.0" y="245.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="355.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="355.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow9" id="BPMNEdge_seqFlow9">
+        <omgdi:waypoint x="320.0" y="205.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="95.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="95.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow10" id="BPMNEdge_seqFlow10">
+        <omgdi:waypoint x="340.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="225.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association2" id="BPMNEdge_association2">
+        <omgdi:waypoint x="615.0" y="81.60606060606061"></omgdi:waypoint>
+        <omgdi:waypoint x="588.546218487395" y="150.54621848739495"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="90.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="150.0" y="225.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

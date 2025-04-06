@@ -1,0 +1,50 @@
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="definition_6a644d31" name="折扣计算决策表" namespace="http://www.flowable.org/dmn">
+  <decision id="discountCalculationDecision" name="折扣计算决策表">
+    <decisionTable id="decisionTable_a9d2480c" hitPolicy="FIRST">
+      <input id="InputClause_1hmm6z2" label="消费金额">
+        <inputExpression id="inputExpression_56eb2d74" typeRef="number">
+          <text>originalTotalPrice</text>
+        </inputExpression>
+      </input>
+      <output id="outputExpression_d0b9edf4" label="折扣价格" name="actualTotalPrice" typeRef="number"></output>
+      <output id="outputExpression_edcf700b" label="折扣率" name="discountRatio" typeRef="number"></output>
+      <rule id="DecisionRule_19v0bf6">
+        <description>消费金额不足5000元时，不打折</description>
+        <inputEntry id="inputEntry_56eb2d74_1">
+          <text><![CDATA[${originalTotalPrice < 5000}]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_d0b9edf4_1">
+          <text><![CDATA[${originalTotalPrice}]]></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_edcf700b_1">
+          <text><![CDATA[1]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1se1yl6">
+        <description>消费金额满5000元且不足10000元时，打九折</description>
+        <inputEntry id="inputEntry_56eb2d74_2">
+          <text><![CDATA[${originalTotalPrice >= 5000 && originalTotalPrice < 10000}]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_d0b9edf4_2">
+          <text><![CDATA[${originalTotalPrice * 0.9}]]></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_edcf700b_2">
+          <text><![CDATA[0.9]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0pgnp50">
+        <description>消费金额满10000元时，打八折</description>
+        <inputEntry id="inputEntry_56eb2d74_3">
+          <text><![CDATA[${originalTotalPrice >= 10000}]]></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_d0b9edf4_3">
+          <text><![CDATA[${originalTotalPrice * 0.8}]]></text>
+        </outputEntry>
+        <outputEntry id="outputEntry_edcf700b_3">
+          <text><![CDATA[0.8]]></text>
+        </outputEntry>
+      </rule>      
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI/>
+</definitions>

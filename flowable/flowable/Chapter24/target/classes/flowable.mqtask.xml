@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--数据源配置-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <!-- 自定义ActivityBehaviorFactory -->
+    <bean id="customActivityBehaviorFactory" class="com.bpm.example.demo1.bpmn.parser.factory.CustomActivityBehaviorFactory" />
+    <!-- 自定义流程元素TaskParseHandler -->
+    <bean id="customServiceTaskParseHandler" class="com.bpm.example.demo1.bpmn.parser.handler.CustomServiceTaskParseHandler" />
+    <!-- 自定义ProcessValidatorFactory -->
+    <bean id ="customProcessValidatorFactory" class="com.bpm.example.demo1.validation.CustomProcessValidatorFactory"/>
+    <!-- 自定义ProcessValidator -->
+    <bean id="processValidator" class="org.flowable.validation.ProcessValidatorImpl" factory-bean="customProcessValidatorFactory" factory-method="createDefaultProcessValidator"/>
+
+    <!--Flowable流程引擎-->
+    <bean id="processEngineConfiguration"
+          class="org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+        <!-- 配置customDefaultBpmnParseHandlers -->
+        <property name="customDefaultBpmnParseHandlers" >
+            <list>
+                <ref bean="customServiceTaskParseHandler"/>
+            </list>
+        </property>
+        <!-- 配置自定义ActivityBehaviorFactory -->
+        <property name="activityBehaviorFactory" ref="customActivityBehaviorFactory"/>
+        <!-- 配置自定义ProcessValidator -->
+        <property name="processValidator" ref="processValidator"/>
+    </bean>
+</beans>

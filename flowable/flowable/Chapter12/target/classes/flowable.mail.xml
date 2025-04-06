@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--数据源配置-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+    <!-- Flowable流程引擎 -->
+    <bean id="processEngineConfiguration"
+          class="org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+        <!-- 设置邮箱的SMTP服务器 -->
+        <property name="mailServerHost" value="smtp.163.com" />
+        <!-- 设置邮箱的端口 -->
+        <property name="mailServerPort" value="465"/>
+        <!-- 设置默认的发送邮箱 -->
+        <property name="mailServerDefaultFrom" value="hebo824@163.com" />
+        <!-- 设置邮箱用户名 -->
+        <property name="mailServerUsername" value="hebo824@163.com" />
+        <!-- 设置邮箱密码 -->
+        <property name="mailServerPassword" value="123456" />
+        <!-- 设置SSL通信-->
+        <property name="mailServerUseSSL" value="true" />
+    </bean>
+</beans>

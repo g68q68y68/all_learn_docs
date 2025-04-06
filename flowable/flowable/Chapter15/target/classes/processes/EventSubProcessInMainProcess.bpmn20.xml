@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <!-- 定义错误 -->
+  <error id="dilatationError" errorCode="dilatationErrorCode"/>
+  <process id="eventSubProcessInMainProcess" name="事件子流程示例-嵌入主流程中">
+    <startEvent id="startEvent"/>
+    <!-- 定义主流程的错误结束事件 -->
+    <endEvent id="errorEndEvent">
+        <errorEventDefinition errorRef="dilatationError"/>
+    </endEvent>
+    <userTask id="firstTaskOfMainProcess" name="申请扩容"/>
+    <userTask id="secondTaskOfMainProcess" name="客服扩容"/>
+    <!-- 定义事件子流程 -->
+    <subProcess id="eventSubProcess" name="管理员扩容事件子流程" triggeredByEvent="true">
+      <startEvent id="errorStartEvent" flowable:isInterrupting="true">
+        <errorEventDefinition errorRef="dilatationError"/>
+      </startEvent>
+      <userTask id="firstTaskOfSubProcess" name="管理员扩容"/>
+      <endEvent id="endEvent2"/>
+      <sequenceFlow id="seqFlow1" sourceRef="errorStartEvent" targetRef="firstTaskOfSubProcess"/>
+      <sequenceFlow id="seqFlow2" sourceRef="firstTaskOfSubProcess" targetRef="endEvent2"/>
+    </subProcess>
+    <sequenceFlow id="seqFlow3" sourceRef="startEvent" targetRef="firstTaskOfMainProcess"/>
+    <sequenceFlow id="seqFlow4" sourceRef="firstTaskOfMainProcess" targetRef="secondTaskOfMainProcess"/>
+    <exclusiveGateway id="exclusiveGateway1"/>
+    <sequenceFlow id="seqFlow5" sourceRef="secondTaskOfMainProcess" targetRef="exclusiveGateway1"/>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="seqFlow6" name="扩容失败" sourceRef="exclusiveGateway1" targetRef="errorEndEvent">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${operateResult == false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="seqFlow7" name="扩容成功" sourceRef="exclusiveGateway1" targetRef="endEvent1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${operateResult == true}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_eventSubProcessInMainProcess">
+    <bpmndi:BPMNPlane bpmnElement="eventSubProcessInMainProcess" id="BPMNPlane_eventSubProcessInMainProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="120.0" y="245.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="errorEndEvent" id="BPMNShape_errorEndEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="600.0" y="185.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstTaskOfMainProcess" id="BPMNShape_firstTaskOfMainProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="195.0" y="220.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="eventSubProcess" id="BPMNShape_eventSubProcess">
+        <omgdc:Bounds height="141.0" width="428.0" x="165.0" y="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="errorStartEvent" id="BPMNShape_errorStartEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="195.0" y="85.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstTaskOfSubProcess" id="BPMNShape_firstTaskOfSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.0" y="60.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent2" id="BPMNShape_endEvent2">
+        <omgdc:Bounds height="28.0" width="28.0" x="506.0" y="86.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondTaskOfMainProcess" id="BPMNShape_secondTaskOfMainProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="340.0" y="220.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusiveGateway1" id="BPMNShape_exclusiveGateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="485.0" y="240.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="600.0" y="310.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow7" id="BPMNEdge_seqFlow7">
+        <omgdi:waypoint x="517.4854651162791" y="267.51453488372096"/>
+        <omgdi:waypoint x="601.9172053820057" y="316.9285026890079"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4">
+        <omgdi:waypoint x="295.0" y="260.0"/>
+        <omgdi:waypoint x="340.0" y="260.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow6" id="BPMNEdge_seqFlow6">
+        <omgdi:waypoint x="518.2647058823529" y="253.26470588235293"/>
+        <omgdi:waypoint x="601.8204919657321" y="205.90359211158966"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="225.0" y="100.5"/>
+        <omgdi:waypoint x="315.0" y="100.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="150.0" y="260.0"/>
+        <omgdi:waypoint x="195.0" y="260.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow5" id="BPMNEdge_seqFlow5">
+        <omgdi:waypoint x="440.0" y="260.2164502164502"/>
+        <omgdi:waypoint x="485.4130434782609" y="260.4130434782609"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="415.0" y="100.5"/>
+        <omgdi:waypoint x="506.0" y="100.5"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

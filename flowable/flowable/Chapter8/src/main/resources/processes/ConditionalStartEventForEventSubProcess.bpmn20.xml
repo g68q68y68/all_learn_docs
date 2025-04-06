@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <process id="ConditionalStartEventForEventSubProcess" name="条件开始节点示例流程">
+    <startEvent id="startEvent1"/>
+    <userTask id="userTask1" name="问题上报"/>
+    <userTask id="usertTask2" name="客服跟进"/>
+    <endEvent id="endEvent1"/>
+    <subProcess id="eventSubprocess1" name="质量督查事件子流程" triggeredByEvent="true">
+      <endEvent id="endEvent2"/>
+      <userTask id="userTask3" name="质量督查"/>
+      <startEvent id="startEvent2" isInterrupting="true">
+        <conditionalEventDefinition>
+          <condition>${exceptionNum > 10}</condition>
+        </conditionalEventDefinition>
+      </startEvent>
+      <sequenceFlow id="sequenceFlow4" sourceRef="startEvent2" targetRef="userTask3"/>
+      <sequenceFlow id="sequenceFlow5" sourceRef="userTask3" targetRef="endEvent2"/>
+    </subProcess>
+    <sequenceFlow id="sequenceFlow1" sourceRef="startEvent1" targetRef="userTask1"/>
+    <sequenceFlow id="sequenceFlow2" sourceRef="userTask1" targetRef="usertTask2"/>
+    <sequenceFlow id="sequenceFlow3" sourceRef="usertTask2" targetRef="endEvent1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ConditionalStartEventForEventSubProcess">
+    <bpmndi:BPMNPlane bpmnElement="ConditionalStartEventForEventSubProcess" id="BPMNPlane_ConditionalStartEventForEventSubProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="90.0" y="285.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="180.0" y="260.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertTask2" id="BPMNShape_usertTask2">
+        <omgdc:Bounds height="80.0" width="100.0" x="345.0" y="260.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="495.0" y="286.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="eventSubprocess1" id="BPMNShape_eventSubprocess1">
+        <omgdc:Bounds height="140.0" width="364.0" x="105.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent2" id="BPMNShape_endEvent2">
+        <omgdc:Bounds height="28.0" width="28.0" x="408.0" y="146.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask3" id="BPMNShape_userTask3">
+        <omgdc:Bounds height="80.0" width="100.0" x="237.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startEvent2" id="BPMNShape_startEvent2">
+        <omgdc:Bounds height="30.0" width="30.0" x="123.0" y="145.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow5" id="BPMNEdge_sequenceFlow5" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="336.9499999999527" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="408.0" y="160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow3" id="BPMNEdge_sequenceFlow3" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="444.94999999999595" y="300.0"></omgdi:waypoint>
+        <omgdi:waypoint x="495.0" y="300.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow4" id="BPMNEdge_sequenceFlow4" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="152.94999917679615" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="236.99999999998346" y="160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow1" id="BPMNEdge_sequenceFlow1" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="119.94999883049303" y="300.0"></omgdi:waypoint>
+        <omgdi:waypoint x="180.0" y="300.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow2" id="BPMNEdge_sequenceFlow2" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="279.9499999998897" y="300.0"></omgdi:waypoint>
+        <omgdi:waypoint x="344.99999999998465" y="300.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

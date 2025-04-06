@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <!-- 定义id为financialError的错误 -->
+  <error id="financialError" errorCode="financialErrorCode"/>
+  <process id="errorStartEventProcess" name="错误开始事件示例流程">
+    <startEvent id="startEvent1"/>
+    <serviceTask id="serviceTask1" name="财务审计" activiti:class="com.bpm.example.startevent.demo.delegate.FinancialAuditDelegate"/>
+    <sequenceFlow id="sequenceFlow1" sourceRef="startEvent1" targetRef="serviceTask1"/>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="sequenceFlow2" sourceRef="serviceTask1" targetRef="endEvent1"/>
+    <!--triggeredByEvent配置必须为true，默认是false-->
+    <subProcess id="subProcess1" name="上报财务主管子流程" activiti:exclusive="true" triggeredByEvent="true">
+      <!-- 定义错误开始事件 -->
+      <startEvent id="startEvent2" activiti:isInterrupting="true">
+        <errorEventDefinition errorRef="financialError"/>
+      </startEvent>
+      <serviceTask id="serviceTask2" name="上报财务主管" activiti:class="com.bpm.example.startevent.demo.delegate.ReportFinanceOfficerDelegate"/>
+      <endEvent id="endEvent2"/>
+      <sequenceFlow id="sequenceFlow3" sourceRef="startEvent2" targetRef="serviceTask2"/>
+      <sequenceFlow id="sequenceFlow4" sourceRef="serviceTask2" targetRef="endEvent2"/>
+    </subProcess>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_errorStartEventProcess">
+    <bpmndi:BPMNPlane bpmnElement="errorStartEventProcess" id="BPMNPlane_errorStartEventProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="190.0" y="250.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="serviceTask1" id="BPMNShape_serviceTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="320.0" y="225.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="520.0" y="251.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcess1" id="BPMNShape_subProcess1">
+        <omgdc:Bounds height="192.0" width="390.0" x="180.0" y="15.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startEvent2" id="BPMNShape_startEvent2">
+        <omgdc:Bounds height="30.0" width="30.0" x="210.0" y="90.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="serviceTask2" id="BPMNShape_serviceTask2">
+        <omgdc:Bounds height="80.0" width="100.0" x="325.0" y="65.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent2" id="BPMNShape_endEvent2">
+        <omgdc:Bounds height="28.0" width="28.0" x="495.0" y="91.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow4" id="BPMNEdge_sequenceFlow4">
+        <omgdi:waypoint x="425.0" y="105.0"/>
+        <omgdi:waypoint x="495.0" y="105.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow1" id="BPMNEdge_sequenceFlow1">
+        <omgdi:waypoint x="220.0" y="265.0"/>
+        <omgdi:waypoint x="320.0" y="265.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow2" id="BPMNEdge_sequenceFlow2">
+        <omgdi:waypoint x="420.0" y="265.0"/>
+        <omgdi:waypoint x="520.0" y="265.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow3" id="BPMNEdge_sequenceFlow3">
+        <omgdi:waypoint x="240.0" y="105.0"/>
+        <omgdi:waypoint x="325.0" y="105.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

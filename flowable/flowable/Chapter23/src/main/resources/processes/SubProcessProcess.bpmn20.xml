@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <process id="subProcessProcess" name="内嵌子流程示例">
+    <startEvent id="startEventOfMainProcess"/>
+    <userTask id="firstTaskOfMainProcess" name="贷款申请"/>
+    <subProcess id="subProcess" name="贷款额度审批">
+      <startEvent id="startEventOfSubProcess"/>
+      <userTask id="firstTaskOfSubProcess" name="审批贷款额度"/>
+      <exclusiveGateway id="exclusiveGatewayOfSubProcess"/>
+      <endEvent id="endEventOfSubProcess"/>
+      <userTask id="secondTaskOfSubProcess" name="复核贷款额度"/>
+      <sequenceFlow id="seqFlow1" sourceRef="startEventOfSubProcess" targetRef="firstTaskOfSubProcess"/>
+      <sequenceFlow id="seqFlow2" sourceRef="firstTaskOfSubProcess" targetRef="exclusiveGatewayOfSubProcess"/>
+      <sequenceFlow id="seqFlow3" sourceRef="secondTaskOfSubProcess" targetRef="endEventOfSubProcess"/>
+      <sequenceFlow id="seqFlow4" name="贷款额度小于100w" sourceRef="exclusiveGatewayOfSubProcess" targetRef="endEventOfSubProcess">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${loanAmount<1000000}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="seqFlow5" name="贷款额度大于100w" sourceRef="exclusiveGatewayOfSubProcess" targetRef="secondTaskOfSubProcess">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${loanAmount>=1000000}]]></conditionExpression>
+      </sequenceFlow>
+    </subProcess>
+    <userTask id="secondTaskOfMainProcess" name="发放贷款"/>
+    <sequenceFlow id="seqFlow6" sourceRef="subProcess" targetRef="secondTaskOfMainProcess"/>
+    <sequenceFlow id="seqFlow7" sourceRef="startEventOfMainProcess" targetRef="firstTaskOfMainProcess"/>
+    <sequenceFlow id="seqFlow8" sourceRef="firstTaskOfMainProcess" targetRef="subProcess"/>
+    <endEvent id="endEventOfMainProcess"/>
+    <sequenceFlow id="seqFlow9" sourceRef="secondTaskOfMainProcess" targetRef="endEventOfMainProcess"/>
+    <sequenceFlow id="seqFlow10" sourceRef="boundaryEventOfMainProcess" targetRef="endEventOfMainProcess"/>
+    <boundaryEvent id="boundaryEventOfMainProcess" attachedToRef="subProcess" cancelActivity="true">
+      <timerEventDefinition>
+        <timeDuration>PT1M</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_subProcessProcess">
+    <bpmndi:BPMNPlane bpmnElement="subProcessProcess" id="BPMNPlane_subProcessProcess">
+      <bpmndi:BPMNShape bpmnElement="startEventOfMainProcess" id="BPMNShape_startEventOfMainProcess">
+        <omgdc:Bounds height="30.0" width="30.0" x="30.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstTaskOfMainProcess" id="BPMNShape_firstTaskOfMainProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="105.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcess" id="BPMNShape_subProcess">
+        <omgdc:Bounds height="263.0" width="495.0" x="255.0" y="57.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startEventOfSubProcess" id="BPMNShape_startEventOfSubProcess">
+        <omgdc:Bounds height="30.0" width="30.0" x="270.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstTaskOfSubProcess" id="BPMNShape_firstTaskOfSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="330.0" y="115.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusiveGatewayOfSubProcess" id="BPMNShape_exclusiveGatewayOfSubProcess">
+        <omgdc:Bounds height="40.0" width="40.0" x="465.0" y="135.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEventOfSubProcess" id="BPMNShape_endEventOfSubProcess">
+        <omgdc:Bounds height="28.0" width="28.0" x="705.0" y="141.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondTaskOfSubProcess" id="BPMNShape_secondTaskOfSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="555.0" y="230.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondTaskOfMainProcess" id="BPMNShape_secondTaskOfMainProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="795.0" y="148.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEventOfMainProcess" id="BPMNShape_endEventOfMainProcess">
+        <omgdc:Bounds height="28.0" width="28.0" x="945.0" y="174.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryEventOfMainProcess" id="BPMNShape_boundaryEventOfMainProcess">
+        <omgdc:Bounds height="31.0" width="31.0" x="734.5442678572209" y="260.6658877728867"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="655.0" y="270.0"/>
+        <omgdi:waypoint x="719.0" y="270.0"/>
+        <omgdi:waypoint x="719.0" y="169.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow6" id="BPMNEdge_seqFlow6">
+        <omgdi:waypoint x="750.0" y="188.5"/>
+        <omgdi:waypoint x="795.0" y="188.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow5" id="BPMNEdge_seqFlow5">
+        <omgdi:waypoint x="485.5" y="174.5"/>
+        <omgdi:waypoint x="485.5" y="270.0"/>
+        <omgdi:waypoint x="555.0" y="270.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="430.0" y="155.23696682464455"/>
+        <omgdi:waypoint x="465.4047619047619" y="155.4047619047619"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow10" id="BPMNEdge_seqFlow10">
+        <omgdi:waypoint x="766.5441835754732" y="276.6139550392476"/>
+        <omgdi:waypoint x="959.0" y="275.98927945797124"/>
+        <omgdi:waypoint x="959.0" y="202.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4">
+        <omgdi:waypoint x="504.54077253218884" y="155.45922746781116"/>
+        <omgdi:waypoint x="705.0000320968776" y="155.02997851799384"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="300.0" y="155.0"/>
+        <omgdi:waypoint x="330.0" y="155.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow7" id="BPMNEdge_seqFlow7">
+        <omgdi:waypoint x="60.0" y="178.0"/>
+        <omgdi:waypoint x="105.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow9" id="BPMNEdge_seqFlow9">
+        <omgdi:waypoint x="895.0" y="188.5"/>
+        <omgdi:waypoint x="945.0" y="188.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow8" id="BPMNEdge_seqFlow8">
+        <omgdi:waypoint x="205.0" y="179.51079136690646"/>
+        <omgdi:waypoint x="255.0" y="181.02158273381295"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

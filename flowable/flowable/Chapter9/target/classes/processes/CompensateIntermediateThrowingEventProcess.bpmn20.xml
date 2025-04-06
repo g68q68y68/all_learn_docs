@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <!-- 定义id为errorFlag的错误 -->
+  <error id="errorFlag" errorCode="500"/>
+  <process id="compensateIntermediateThrowingEventProcess" name="补偿中间抛出事件示例流程">
+    <startEvent id="firstStartEventOfMainProcess"/>
+    <parallelGateway id="parallelGateway1"/>
+    <endEvent id="firstEndEventOfMainProcess"/>
+    <sequenceFlow id="seqFlow1" sourceRef="secondUserTaskOfMainProcess" targetRef="firstEndEventOfMainProcess"/>
+    <endEvent id="thirdEndEventOfMainProcess"/>
+    <sequenceFlow id="seqFlow2" sourceRef="firstIntermediateThrowEventOfMainProcess" targetRef="thirdEndEventOfMainProcess"/>
+    <subProcess id="signUpSubProcess" name="在线报名子流程">
+      <startEvent id="firstStartEventOfSubProcess"/>
+      <userTask id="secondUserTaskOfSubProcess" name="报名审核"/>
+      <userTask id="firstUserTaskOfSubProcess" name="正式报名"/>
+      <serviceTask id="secondServiceTaskOfSubProcess" name="取消正式报名" flowable:class="com.bpm.example.intermediateevent.demo.delegate.CancelSignUpService" isForCompensation="true"/>
+      <endEvent id="firstEndEventOfSubProcessF"/>
+      <!-- 定义补偿边界事件 -->
+      <boundaryEvent id="boundaryEvent1" attachedToRef="firstUserTaskOfSubProcess" cancelActivity="false">
+        <compensateEventDefinition waitForCompletion="true"/>
+      </boundaryEvent>
+      <sequenceFlow id="seqFlow3" sourceRef="firstUserTaskOfSubProcess" targetRef="secondUserTaskOfSubProcess"/>
+      <sequenceFlow id="seqFlow4" sourceRef="secondUserTaskOfSubProcess" targetRef="firstEndEventOfSubProcessF"/>
+      <sequenceFlow id="seqFlow5" sourceRef="firstStartEventOfSubProcess" targetRef="firstUserTaskOfSubProcess"/>
+    </subProcess>
+    <userTask id="secondUserTaskOfMainProcess" name="银行卡支付">
+      <extensionElements>
+        <flowable:taskListener event="complete" class="com.bpm.example.intermediateevent.demo.listener.PaymentListener" />
+      </extensionElements>
+    </userTask>
+    <endEvent id="secondEndEventOfMainProcess"/>
+    <sequenceFlow id="seqFlow6" sourceRef="signUpSubProcess" targetRef="secondEndEventOfMainProcess"/>
+    <sequenceFlow id="seqFlow7" sourceRef="parallelGateway1" targetRef="signUpSubProcess"/>
+    <sequenceFlow id="seqFlow8" sourceRef="parallelGateway1" targetRef="secondUserTaskOfMainProcess"/>
+    <sequenceFlow id="seqFlow9" sourceRef="firstErrorBoundaryEventOfMainProcess" targetRef="firstIntermediateThrowEventOfMainProcess"/>
+    <!-- 定义补偿中间抛出事件 -->
+    <intermediateThrowEvent id="firstIntermediateThrowEventOfMainProcess" name="取消报名">
+      <compensateEventDefinition waitForCompletion="true"/>
+    </intermediateThrowEvent>
+    <!-- 定义错误边界事件 -->
+    <boundaryEvent id="firstErrorBoundaryEventOfMainProcess" name="支付失败" attachedToRef="secondUserTaskOfMainProcess" cancelActivity="true">
+      <errorEventDefinition errorRef="errorFlag"/>
+    </boundaryEvent>
+    <sequenceFlow id="seqFlow10" sourceRef="firstUserTaskOfMainProcess" targetRef="parallelGateway1"/>
+    <userTask id="firstUserTaskOfMainProcess" name="预报名"/>
+    <sequenceFlow id="seqFlow11" sourceRef="firstStartEventOfMainProcess" targetRef="firstUserTaskOfMainProcess"/>
+    <!-- 定义补偿边界事件 -->
+    <boundaryEvent id="boundaryEvent2" attachedToRef="firstUserTaskOfMainProcess">
+      <compensateEventDefinition waitForCompletion="true"/>
+    </boundaryEvent>
+    <serviceTask id="firstServiceTaskOfMainProcess" name="取消预报名" flowable:class="com.bpm.example.intermediateevent.demo.delegate.CancelPredictionService" isForCompensation="true"/>
+    <textAnnotation id="textAnnotation1">
+      <text>如果上面的子流程没有完成，则补偿事件不会传播到上面的子流程</text>
+    </textAnnotation>
+    <association id="association1" sourceRef="firstIntermediateThrowEventOfMainProcess" targetRef="textAnnotation1" associationDirection="None"/>
+    <association id="association2" sourceRef="boundaryEvent1" targetRef="secondServiceTaskOfSubProcess" associationDirection="None"/>
+    <association id="association3" sourceRef="boundaryEvent2" targetRef="firstServiceTaskOfMainProcess" associationDirection="None"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_compensateIntermediateThrowingEventProcess">
+    <bpmndi:BPMNPlane bpmnElement="compensateIntermediateThrowingEventProcess" id="BPMNPlane_compensateIntermediateThrowingEventProcess">
+      <bpmndi:BPMNShape bpmnElement="firstStartEventOfMainProcess" id="BPMNShape_firstStartEventOfMainProcess">
+        <omgdc:Bounds height="30.0" width="30.0" x="135.0" y="260.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelGateway1" id="BPMNShape_parallelGateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="360.0" y="255.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstEndEventOfMainProcess" id="BPMNShape_firstEndEventOfMainProcess">
+        <omgdc:Bounds height="28.0" width="28.0" x="730.0" y="371.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="thirdEndEventOfMainProcess" id="BPMNShape_thirdEndEventOfMainProcess">
+        <omgdc:Bounds height="28.0" width="28.0" x="729.0" y="457.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="signUpSubProcess" id="BPMNShape_signUpSubProcess">
+        <omgdc:Bounds height="271.0" width="507.0" x="454.0" y="15.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstStartEventOfSubProcess" id="BPMNShape_firstStartEventOfSubProcess">
+        <omgdc:Bounds height="30.0" width="30.0" x="480.0" y="76.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondUserTaskOfSubProcess" id="BPMNShape_secondUserTaskOfSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="755.0" y="51.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstUserTaskOfSubProcess" id="BPMNShape_firstUserTaskOfSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="579.0" y="51.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondServiceTaskOfSubProcess" id="BPMNShape_secondServiceTaskOfSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="755.0" y="195.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstEndEventOfSubProcessF" id="BPMNShape_firstEndEventOfSubProcessF">
+        <omgdc:Bounds height="28.0" width="28.0" x="920.0" y="77.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryEvent1" id="BPMNShape_boundaryEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="620.0972918933649" y="116.5032624257131"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondUserTaskOfMainProcess" id="BPMNShape_secondUserTaskOfMainProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="455.0" y="345.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondEndEventOfMainProcess" id="BPMNShape_secondEndEventOfMainProcess">
+        <omgdc:Bounds height="28.0" width="28.0" x="1005.0" y="146.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstIntermediateThrowEventOfMainProcess" id="BPMNShape_firstIntermediateThrowEventOfMainProcess">
+        <omgdc:Bounds height="30.0" width="30.0" x="614.0" y="456.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstUserTaskOfMainProcess" id="BPMNShape_firstUserTaskOfMainProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="225.0" y="235.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstServiceTaskOfMainProcess" id="BPMNShape_firstServiceTaskOfMainProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="227.81805553083052" y="375.2943587907054"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textAnnotation1" id="BPMNShape_textAnnotation1">
+        <omgdc:Bounds height="82.0" width="148.0" x="825.0" y="364.25830078125"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="association1" id="BPMNShape_association1">
+        <omgdc:Bounds height="60.80123097303215" width="181.27066097061686" x="643.7293390293831" y="405.25830078125"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="association3" id="BPMNShape_association3">
+        <omgdc:Bounds height="44.80812592873082" width="0.0" x="277.8180555308305" y="330.4862328619746"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryEvent2" id="BPMNShape_boundaryEvent2">
+        <omgdc:Bounds height="30.0" width="30.0" x="262.8180555308305" y="300.15721472052644"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="association2" id="BPMNShape_association2">
+        <omgdc:Bounds height="87.94267780008428" width="119.61675865240989" x="635.3832413475901" y="147.05732219991572"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstErrorBoundaryEventOfMainProcess" id="BPMNShape_firstErrorBoundaryEventOfMainProcess">
+        <omgdc:Bounds height="30.0" width="30.0" x="490.0" y="410.25830078125"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow5" id="BPMNEdge_seqFlow5">
+        <omgdi:waypoint x="510.0" y="91.0"></omgdi:waypoint>
+        <omgdi:waypoint x="579.0" y="91.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association3" id="BPMNEdge_association3">
+        <omgdi:waypoint x="277.8180555308305" y="330.15721472052644"></omgdi:waypoint>
+        <omgdi:waypoint x="277.8180555308305" y="375.2943587907054"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow6" id="BPMNEdge_seqFlow6">
+        <omgdi:waypoint x="961.0" y="158.23113964687"></omgdi:waypoint>
+        <omgdi:waypoint x="1005.0065061837358" y="159.57323213080414"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="679.0" y="91.0"></omgdi:waypoint>
+        <omgdi:waypoint x="755.0" y="91.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association1" id="BPMNEdge_association1">
+        <omgdi:waypoint x="643.2213354407475" y="466.22992470900726"></omgdi:waypoint>
+        <omgdi:waypoint x="825.0" y="405.25830078125"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow4" id="BPMNEdge_seqFlow4">
+        <omgdi:waypoint x="855.0" y="91.0"></omgdi:waypoint>
+        <omgdi:waypoint x="920.0" y="91.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association2" id="BPMNEdge_association2">
+        <omgdi:waypoint x="635.3730087943103" y="146.50072821799057"></omgdi:waypoint>
+        <omgdi:waypoint x="637.0" y="235.0"></omgdi:waypoint>
+        <omgdi:waypoint x="755.0" y="235.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="555.0" y="385.0"></omgdi:waypoint>
+        <omgdi:waypoint x="730.0" y="385.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="644.0" y="471.0"></omgdi:waypoint>
+        <omgdi:waypoint x="729.0" y="471.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow11" id="BPMNEdge_seqFlow11">
+        <omgdi:waypoint x="165.0" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="225.0" y="275.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow10" id="BPMNEdge_seqFlow10">
+        <omgdi:waypoint x="325.0" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="360.0" y="275.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow9" id="BPMNEdge_seqFlow9">
+        <omgdi:waypoint x="519.0730290904124" y="430.44962548891425"></omgdi:waypoint>
+        <omgdi:waypoint x="614.9269709095876" y="465.80867529233575"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow7" id="BPMNEdge_seqFlow7">
+        <omgdi:waypoint x="380.0" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="380.0" y="150.5"></omgdi:waypoint>
+        <omgdi:waypoint x="454.0" y="150.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow8" id="BPMNEdge_seqFlow8">
+        <omgdi:waypoint x="380.0" y="295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="380.0" y="385.0"></omgdi:waypoint>
+        <omgdi:waypoint x="455.0" y="385.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

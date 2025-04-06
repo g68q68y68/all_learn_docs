@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+       http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+       http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+
+  <!-- 定义自定义转换器-->
+  <custom-transformer class="com.bpm.example.demo2.mule.transformer.JsonToObject" name="jsonToObject" doc:name="自定义转换器" />
+
+  <!-- 定义端点 -->
+  <vm:endpoint name="in" path="getIpInfo" exchange-pattern="request-response"  doc:name="VM端点" />
+  <http:endpoint name="out" address="http://whois.pconline.com.cn/ipJson.jsp?ip=#[payload]&amp;json=true"
+                 exchange-pattern="request-response"
+                 responseTransformer-refs="jsonToObject" doc:name="HTTP端点" />
+
+  <!-- https://blog.csdn.net/bluishglc/article/details/6741014 -->
+  <!-- Flow是mule的最基本处理单元。它从一个inbound endpoint开始，对message进行了一系列的处理，然后从outbound endpoint输出。这期间会flow会使用到上述提及的多种组件参与处理，如transformer、filter等等，而且还可能调用java或其他语言实现的组件进行处理，应该说在应用集成里，flow所要实现的，正是所谓的“集成逻辑”。 -->
+  <flow name="getIpInfoFlow" doc:name="获取IP信息">
+    <vm:inbound-endpoint ref="in" doc:name="VM入口端点"/>
+    <http:outbound-endpoint ref="out" doc:name="HTTP出口端点"/>
+  </flow>
+</mule>

@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fullname" . }} 
+  labels: {{ include "labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: {{ include "labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "labels" . | nindent 8 }}
+    spec:
+      terminationGracePeriodSeconds: 40
+      imagePullSecrets:
+      - name: harbor-secret
+      containers:
+      - name: {{ include "fullname" . }}
+        image:  {{ .Values.image.repository }}/{{ include "fullname" . }}:{{ .Values.image.tag | default "latest"}}
+        imagePullPolicy: IfNotPresent
+        ports: 
+        - containerPort: {{ .Values.service.targetPort}}
+        command: ["/bin/sh"]
+        args: ["-c","java -jar 
+              -Xmx1472m 
+              -Xms1472m 
+              -Xmn512m 
+              -XX:MaxMetaspaceSize=256m 
+              -XX:MetaspaceSize=256m 
+              -Xloggc:/logs/gc-%t.log 
+              -XX:+HeapDumpOnOutOfMemoryError  
+              -XX:HeapDumpPath=/data/logs/heapdump_$POD_NAME.hprof 
+              -XX:+PrintGCDetails 
+              -XX:+UnlockExperimentalVMOptions 
+              -XX:+UseCGroupMemoryLimitForHeap 
+              -XX:NativeMemoryTracking=detail 
+              -Dapollo.meta=http://apollo-configservice.dev.svc.cluster.local:8080
+              -Denv=dev /data/app.jar;/sbin/tini -s"]
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        {{- if .Values.prestop.enabled }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh","-c",'curl -X PUT "http://nacos.wond.com/nacos/v1/ns/instance?serviceName={{ include "fullname" . }}&ip=${POD_IP}&port=80&weight=0" && sleep 30 && PID=`pidof java` && kill -SIGTERM $PID && while ps -p $PID > /dev/null; do sleep 1; done']
+        {{- end }}
+        resources: {{ toYaml .Values.resources | nindent 10}} 
+        livenessProbe: {{ toYaml .Values.livenessProbe | nindent 10}} 
+        readinessProbe: {{ toYaml .Values.readinessProbe | nindent 10}}         
+      {{- if .Values.volumes.enabled }}
+        volumeMounts:
+        - name: timezone
+          mountPath: /etc/localtime
+        - name: {{ include "fullname" . }}
+          mountPath: /data/logs
+          subPathExpr: $(POD_NAME)
+      volumes:
+      - name: timezone
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Shanghai
+      - name: {{ include "fullname" . }}
+        persistentVolumeClaim:
+          claimName: {{ include "fullname" . }}
+      {{- end }}  
+      {{- if .Values.affinity.enabled }}
+      affinity:
+        #节点亲和性
+        nodeAffinity:
+          #硬策略
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              #标签键
+              - key: ResourcePool
+                operator: In
+                #标签值
+                values:
+                - core
+        #pod反亲和性配置
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ include "fullname" . }}
+            topologyKey: kubernetes.io/hostname 
+      {{- end }} 

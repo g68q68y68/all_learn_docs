@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: test
+
+
+flowable:
+  processEngineName: springboot-engine
+  jdbcUrl: jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000
+  jdbcDriver: org.h2.Driver
+  jdbcUsername: sa
+  jdbcPassword:
+  databaseSchemaUpdate: true

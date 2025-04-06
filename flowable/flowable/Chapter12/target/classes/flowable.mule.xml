@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--数据源配置-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+    <!-- Flowable流程引擎 -->
+    <bean id="processEngineConfiguration"
+          class="org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+        <!-- 将muleContext对象放入beans中，mule任务节点需要用到，不能漏-->
+        <property name="beans">
+            <map key-type="java.lang.String">
+                <entry key="muleContext" value-ref="muleContext" />
+            </map>
+        </property>
+
+    </bean>
+
+    <!-- 定义Mule上下文工厂 -->
+    <bean id="muleFactory" class="org.mule.context.DefaultMuleContextFactory" />
+
+    <!-- 定义Mule上下文 -->
+    <bean id="muleContext" factory-bean="muleFactory" factory-method="createMuleContext" init-method="start">
+        <constructor-arg type="java.lang.String" value="mule/mule-config.xml" />
+    </bean>
+
+</beans>

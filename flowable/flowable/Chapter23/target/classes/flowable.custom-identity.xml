@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 定义自定义用户数据管理器 -->
+    <bean id="customUserDataManager" class="com.bpm.example.demo1.identity.user.data.CustomUserDataManager" />
+    <!-- 定义自定义用户组数据管理器 -->
+    <bean id="customGroupDataManager" class="com.bpm.example.demo1.identity.group.data.CustomGroupDataManager" />
+    <!-- 定义自定义关联关系数据管理器 -->
+    <bean id="customMembershipDataManager" class="com.bpm.example.demo1.identity.membership.data.CustomMembershipDataManager" />
+
+    <!-- 定义自定义用户实体管理器 -->
+    <bean id="customUserEntityManager" class="com.bpm.example.demo1.identity.user.CustomUserEntityManager" >
+        <constructor-arg name="idmEngineConfiguration" ref="customIdmEngineConfiguration"/>
+        <constructor-arg name="dataManager" ref="customUserDataManager"/>
+    </bean>
+    <!-- 定义自定义用户组实体管理器 -->
+    <bean id="customGroupEntityManager" class="com.bpm.example.demo1.identity.group.CustomGroupEntityManager" >
+        <constructor-arg name="idmEngineConfiguration" ref="customIdmEngineConfiguration"/>
+        <constructor-arg name="dataManager" ref="customGroupDataManager"/>
+    </bean>
+    <!-- 定义自定义关联关系实体管理器 -->
+    <bean id="customMembershipEntityManager" class="com.bpm.example.demo1.identity.membership.CustomMembershipEntityManager" >
+        <constructor-arg name="idmEngineConfiguration" ref="customIdmEngineConfiguration"/>
+        <constructor-arg name="dataManager" ref="customMembershipDataManager"/>
+    </bean>
+
+    <!-- 自定义身份管理引擎配置 -->
+    <bean id="customIdmEngineConfiguration" class="com.bpm.example.demo1.idm.engine.CustomIdmEngineConfiguration">
+        <!-- 配置自定义userDataManager -->
+        <property name="userDataManager" ref="customUserDataManager" />
+        <!-- 配置自定义groupDataManager -->
+        <property name="groupDataManager" ref="customGroupDataManager" />
+        <!-- 配置自定义membershipDataManager -->
+        <property name="membershipDataManager" ref="customMembershipDataManager" />
+        <!-- 配置自定义userEntityManager -->
+        <property name="userEntityManager" ref="customUserEntityManager" />
+        <!-- 配置自定义groupEntityManager -->
+        <property name="groupEntityManager" ref="customGroupEntityManager" />
+        <!-- 配置自定义membershipEntityManager -->
+        <property name="membershipEntityManager" ref="customMembershipEntityManager" />
+        <!-- 配置用户密码编码器 -->
+        <property name="passwordEncoder">
+            <bean class="org.flowable.idm.engine.impl.authentication.ClearTextPasswordEncoder"/>
+        </property>
+        <!-- 配置密码加密盐 -->
+        <property name="passwordSalt">
+            <bean class="org.flowable.idm.engine.impl.authentication.BlankSalt"/>
+        </property>
+    </bean>
+
+    <!-- 自定义身份管理引擎配置器 -->
+    <bean id="customIdmEngineConfigurator" class="com.bpm.example.demo1.idm.engine.configurator.CustomIdmEngineConfigurator">
+        <property name="idmEngineConfiguration" ref="customIdmEngineConfiguration"/>
+    </bean>
+
+    <!-- flowable流程引擎配置 -->
+    <bean id="processEngineConfiguration"
+          class="org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+        <!-- 启用身份管理引擎 -->
+        <property name="disableIdmEngine" value="false" />
+        <!-- 注册身份管理引擎 -->
+        <property name="idmEngineConfigurator" ref="customIdmEngineConfigurator"/>
+    </bean>
+
+    <!--数据源配置-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+</beans>

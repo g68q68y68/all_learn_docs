@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef">
+    <process id="SimpleProcess" name="SimpleProcess" isExecutable="true">
+        <startEvent id="startEvent1" name="开始"/>
+        <userTask id="userTask1" name="申请"/>
+        <userTask id="userTask2" name="审批"/>
+        <exclusiveGateway id="gateway1" name="网关"/>
+        <endEvent id="endEvent1" name="结束"/>
+        <sequenceFlow id="flow1" name="1" sourceRef="startEvent1" targetRef="userTask1"/>
+        <sequenceFlow id="flow2" name="2" sourceRef="userTask1" targetRef="userTask2"/>
+        <sequenceFlow id="flow3" name="3" sourceRef="userTask2" targetRef="gateway1"/>
+        <sequenceFlow id="flow4" name="4" sourceRef="gateway1" targetRef="userTask1">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${task_审批_outcome=='disagree'}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow5" name="5" sourceRef="gateway1" targetRef="endEvent1">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${task_审批_outcome=='agree'}]]></conditionExpression>
+        </sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_SimpleProcess">
+        <bpmndi:BPMNPlane bpmnElement="SimpleProcess" id="BPMNPlane_SimpleProcess">
+            <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+                <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+                <omgdc:Bounds height="80.0" width="100.0" x="175.0" y="138.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="userTask2" id="BPMNShape_userTask2">
+                <omgdc:Bounds height="80.0" width="100.0" x="320.0" y="138.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="gateway1" id="BPMNShape_gateway1">
+                <omgdc:Bounds height="40.0" width="40.0" x="465.0" y="158.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+                <omgdc:Bounds height="28.0" width="28.0" x="550.0" y="164.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+                <omgdi:waypoint x="130.0" y="178.0"/>
+                <omgdi:waypoint x="175.0" y="178.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+                <omgdi:waypoint x="275.0" y="178.0"/>
+                <omgdi:waypoint x="320.0" y="178.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+                <omgdi:waypoint x="420.0" y="178.2164502164502"/>
+                <omgdi:waypoint x="465.4130434782609" y="178.41304347826087"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+                <omgdi:waypoint x="485.5" y="158.5"/>
+                <omgdi:waypoint x="485.5" y="96.0"/>
+                <omgdi:waypoint x="225.0" y="96.0"/>
+                <omgdi:waypoint x="225.0" y="138.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+                <omgdi:waypoint x="504.62179487179486" y="178.37820512820514"/>
+                <omgdi:waypoint x="550.0002839785394" y="178.0891701657418"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

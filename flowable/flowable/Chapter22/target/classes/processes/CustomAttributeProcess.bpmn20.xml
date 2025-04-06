@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <process id="customAttributeProcess" name="自定义属性流程">
+    <startEvent id="startEvent1" flowable:initiator="INITIATOR">
+      <extensionElements>
+        <flowable:title><![CDATA[${INITIATOR}发起的请假申请]]></flowable:title>
+        <flowable:executionListener event="start" class="com.bpm.example.demo2.listener.MyExectuionListener"/>
+      </extensionElements>
+    </startEvent>
+    <userTask id="userTask1" name="申请" flowable:assignee="${INITIATOR}" flowable:enableToDoNotice="false">
+      <extensionElements>
+        <flowable:noticeContent><![CDATA[${task.getAssignee()}，收到一条新的流程待办，流程标题为【${title}】，任务名称为【${task.getName()}】]]></flowable:noticeContent>
+        <flowable:taskListener event="create" class="com.bpm.example.demo2.listener.MyTaskListener"/>
+      </extensionElements>
+    </userTask>
+    <userTask id="userTask2" name="审批" flowable:assignee="hebo" flowable:enableToDoNotice="true">
+      <extensionElements>
+        <flowable:noticeContent><![CDATA[${task.getAssignee()}，收到一条新的流程待办，流程标题为【${title}】，任务名称为【${task.getName()}】]]></flowable:noticeContent>
+        <flowable:taskListener event="create" class="com.bpm.example.demo2.listener.MyTaskListener"/>
+      </extensionElements>
+    </userTask>
+    <endEvent id="endEvent1" flowable:endNoticeStarter="true" >
+      <extensionElements>
+        <flowable:noticeContent><![CDATA[${INITIATOR}，你发起的标题为【${title}】的流程已办结]]></flowable:noticeContent>
+        <flowable:executionListener event="end" class="com.bpm.example.demo2.listener.MyExectuionListener"/>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="userTask1"/>
+    <sequenceFlow id="SeqFlow2" sourceRef="userTask1" targetRef="userTask2"/>
+    <sequenceFlow id="SeqFlow3" sourceRef="userTask2" targetRef="endEvent1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_customAttributeProcess">
+    <bpmndi:BPMNPlane bpmnElement="customAttributeProcess" id="BPMNPlane_customAttributeProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="45.0" y="195.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="150.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask2" id="BPMNShape_userTask2">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="495.0" y="196.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="SeqFlow3" id="BPMNEdge_SeqFlow3" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="414.95000000000005" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="495.0" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="SeqFlow2" id="BPMNEdge_SeqFlow2" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="249.9499999998897" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="314.99999999998465" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="74.94999906759469" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="150.0" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,11 @@
+version: "3"
+services:
+  #Service for frontend
+  web:
+    image: hub.goldenit.com.cn/yj/ncm-web
+    container_name: ncm-web
+    restart: always
+    ports:
+      - 8000:80
+    volumes:
+      - ./web/logs:/app/logs

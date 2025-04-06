@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="serviceTaskDelegateExpressionFieldInjectedProcess" name="服务任务示例流程3">
+    <startEvent id="startEvent1"/>
+    <!-- 定义服务任务 -->
+    <serviceTask id="serviceTask1" name="计算采购总价" flowable:delegateExpression="${calculationDelegateExpressionFieldInjectedJavaDelegate}">
+      <extensionElements>
+        <flowable:field name="inventoryCheckResult" expression="${quantity > 5 ? '库存不足' : '库存充足'}" />
+        <flowable:field name="totalAmount" expression="${unitPrice * quantity}" />
+        <flowable:field name="description" expression="${description}"/>
+      </extensionElements>
+    </serviceTask>
+    <endEvent id="endEvent1"/>
+    <userTask id="userTask1" name="提交采购单"/>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="userTask1"/>
+    <sequenceFlow id="seqFlow2" sourceRef="userTask1" targetRef="serviceTask1"/>
+    <sequenceFlow id="seqFlow3" sourceRef="serviceTask1" targetRef="endEvent1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_serviceTaskDelegateExpressionFieldInjectedProcess">
+    <bpmndi:BPMNPlane bpmnElement="serviceTaskDelegateExpressionFieldInjectedProcess" id="BPMNPlane_serviceTaskDelegateExpressionFieldInjectedProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="75.0" y="186.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="serviceTask1" id="BPMNShape_serviceTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="330.0" y="161.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="495.0" y="187.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="165.0" y="161.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow3" id="BPMNEdge_seqFlow3">
+        <omgdi:waypoint x="430.0" y="201.0"></omgdi:waypoint>
+        <omgdi:waypoint x="495.0" y="201.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="105.0" y="201.0"></omgdi:waypoint>
+        <omgdi:waypoint x="165.0" y="201.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="265.0" y="201.0"></omgdi:waypoint>
+        <omgdi:waypoint x="330.0" y="201.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

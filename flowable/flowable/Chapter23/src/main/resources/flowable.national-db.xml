@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 数据源配置 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <!-- 数据库驱动名称 -->
+        <property name="driverClassName" value="dm.jdbc.driver.DmDriver"/>
+        <!-- 数据库地址 -->
+        <property name="url" value="jdbc:dm://localhost:5236"/>
+        <!-- 数据库用户名 -->
+        <property name="username" value="FLOWABLE"/>
+        <!-- 数据库密码 -->
+        <property name="password" value="qwerty123456"/>
+    </bean>
+
+    <!-- Flowable流程引擎 -->
+    <bean id="processEngineConfiguration"
+          class="org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="true"/>
+        <!-- 启用IDM引擎 -->
+        <property name="disableIdmEngine" value="false"/>
+        <!-- 启用EventRegistry引擎 -->
+        <property name="disableEventRegistry" value="false"/>
+        <!-- 引用DMN引擎、表单引擎配置器 -->
+        <property name="configurators">
+            <list>
+                <ref bean="dmnEngineConfigurator"/>
+                <ref bean="formEngineConfigurator"/>
+                <ref bean="cmmnEngineConfigurator"/>
+            </list>
+        </property>
+    </bean>
+    <!-- DMN引擎配置器 -->
+    <bean id="dmnEngineConfigurator"
+          class="org.flowable.dmn.engine.configurator.DmnEngineConfigurator">
+        <property name="dmnEngineConfiguration" ref="dmnEngineConfiguration"/>
+    </bean>
+    <!-- DMN引擎配置 -->
+    <bean id="dmnEngineConfiguration" class="org.flowable.dmn.engine.DmnEngineConfiguration">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="databaseSchemaUpdate" value="create-drop"/>
+    </bean>
+    <!-- 表单引擎配置器 -->
+    <bean id="formEngineConfigurator" class="org.flowable.form.engine.configurator.FormEngineConfigurator">
+        <property name="formEngineConfiguration" ref="formEngineConfiguration"/>
+    </bean>
+    <!-- 表单引擎配置 -->
+    <bean id="formEngineConfiguration" class="org.flowable.form.engine.impl.cfg.StandaloneFormEngineConfiguration">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="databaseSchemaUpdate" value="true"/>
+    </bean>
+    <!-- CMMN引擎配置器 -->
+    <bean id="cmmnEngineConfigurator" class="org.flowable.cmmn.engine.configurator.CmmnEngineConfigurator">
+        <property name="cmmnEngineConfiguration" ref="cmmnEngineConfiguration"/>
+    </bean>
+    <!-- CMMN引擎配置 -->
+    <bean id="cmmnEngineConfiguration" class="org.flowable.cmmn.engine.impl.cfg.StandaloneInMemCmmnEngineConfiguration">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="databaseSchemaUpdate" value="true"/>
+    </bean>
+</beans>

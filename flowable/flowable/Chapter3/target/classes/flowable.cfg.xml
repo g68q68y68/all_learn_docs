@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--数据源配置-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:flowable"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+    <!-- Flowable流程引擎-->
+    <bean id="processEngineConfiguration"
+          class="org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 数据库更新策略 -->
+        <property name="databaseSchemaUpdate" value="drop-create"/>
+
+        <!-- 表示是否激活异步执行器。如果设置为true，则会启用异步执行器；如果设置为false，则禁用异步执行器。默认值为true。 -->
+        <property name="asyncExecutorActivate" value="false"/>
+        <!-- 表示异步执行器的配置。该配置用于配置异步执行器的行为和属性，例如线程池大小、队列容量等。可以通过配置该属性来指定具体的异步执行器配置。 -->
+        <property name="asyncExecutorConfiguration" ref="asyncJobExecutorConfiguration"/>
+        <!-- 表示异步执行器的实例。异步执行器用于执行异步任务，例如异步消息发送和定时任务。可以通过配置该属性来指定具体的异步执行器实例。 -->
+        <property name="asyncExecutor" ref="asyncJobExecutor"/>
+        <!-- 表示异步任务执行器的实例。异步任务执行器用于执行异步任务，例如异步方法调用和异步事件处理。可以通过配置该属性来指定具体的异步任务执行器实例。 -->
+        <property name="asyncTaskExecutor" ref="asyncTaskExecutor"/>
+        <!-- 表示异步任务执行器的配置。该配置用于配置异步任务执行器的行为和属性，例如线程池大小、队列容量等。可以通过配置该属性来指定具体的异步任务执行器配置。 -->
+        <property name="asyncExecutorTaskExecutorConfiguration" ref="asyncExecutorTaskExecutorConfiguration"/>
+
+        <!-- 此属性用于启用或禁用异步历史记录功能。如果设置为true，则Flowable将以异步方式处理历史记录数据。默认值为false。 -->
+        <property name="asyncHistoryEnabled" value="false"/>
+        <!-- 这是一个配置类，用于定义异步历史记录执行器的行为。您可以配置异步历史记录执行器的线程池大小、最大等待时间等。 -->
+        <!--
+        <property name="asyncHistoryExecutorConfiguration" ref="asyncHistoryJobExecutorConfiguration"/>
+        -->
+        <!-- 此属性用于控制异步历史记录执行器是否在引擎启动时自动激活。如果设置为true，则引擎启动时将自动激活异步历史记录执行器。默认值为true。 -->
+        <property name="asyncHistoryExecutorActivate" value="true"/>
+        <!-- 此属性用于配置异步历史记录执行器的实现类。异步历史记录执行器负责处理历史记录数据的异步处理。可以使用asyncHistoryExecutorConfiguration来配置它的行为。默认情况下，Flowable使用DefaultAsyncHistoryExecutor作为异步历史记录执行器。 -->
+        <!--
+        <property name="asyncHistoryExecutor" ref="asyncHistoryExecutor"/>
+        -->
+        <!-- 此属性用于配置异步历史记录执行器的线程池。异步历史记录执行器使用线程池来执行异步历史记录任务。以使用asyncHistoryExecutorConfiguration来配置它的行为。默认情况下，Flowable使用DefaultAsyncHistoryTaskExecutor作为异步历史记录执行器的线程池。 -->
+        <!--
+        <property name="asyncHistoryTaskExecutor" ref="asyncHistoryTaskExecutor"/>
+        -->
+        <!-- The number of retries for a job. -->
+        <property name="asyncExecutorNumberOfRetries" value="3"/>    <!-- asyncExecutorNumberOfRetries -->
+    </bean>
+
+    <bean id="asyncJobExecutorConfiguration"
+          class="org.flowable.job.service.impl.asyncexecutor.AsyncJobExecutorConfiguration">
+        <!-- The amount of time an async job is locked when acquired. During this period of time, no other async executor will try to acquire and lock this job. -->
+        <property name="asyncJobLockTime">
+            <bean class="java.time.Duration" factory-method="ofHours">
+                <constructor-arg value="1"/>
+            </bean>
+        </property>
+        <!-- Whether the thread for acquiring async jobs will be started. This can be used to boot up engine instances that still execute jobs originating from this instance itself, but don't fetch new jobs themselves. -->
+        <property name="asyncJobAcquisitionEnabled" value="true"/>
+        <!-- Whether the thread for acquiring timer jobs will be started. -->
+        <property name="timerJobAcquisitionEnabled" value="true"/>
+        <!-- Whether the thread for resetting expired jobs will be started. -->
+        <property name="resetExpiredJobEnabled" value="true"/>
+        <!-- Whether to unlock jobs that are owned by this executor (have the same lockOwner) at startup or shutdown. -->
+        <property name="unlockOwnedJobs" value="true"/>
+        <!-- Whether runnable for acquiring timer jobs should be enabled -->
+        <property name="timerRunnableNeeded" value="true"/>
+        <!-- The name of the thread in which async jobs will be acquired. -->
+        <property name="acquireRunnableThreadName" value="acquireRunnableThreadName"/>
+        <!-- The name of the thread in which expired jobs will be reset. -->
+        <property name="resetExpiredRunnableName" value="resetExpiredRunnableName"/>
+        <!-- How large should the thread pool for moving timer jobs be. -->
+        <property name="moveTimerExecutorPoolSize" value="4"/>
+        <!-- How many async / history jobs should be acquired in one acquisition. -->
+        <property name="maxTimerJobsPerAcquisition" value="512"/> <!-- asyncExecutorMaxTimerJobsPerAcquisition -->
+        <!-- How many async / history jobs should be acquired in one acquisition. -->
+        <property name="maxAsyncJobsDuePerAcquisition" value="512"/> <!-- asyncExecutorMaxAsyncJobsDuePerAcquisition -->
+        <!-- The time the timer acquisition thread should wait before executing the next acquire logic. -->
+        <property name="defaultTimerJobAcquireWaitTime">   <!-- asyncExecutorDefaultTimerJobAcquireWaitTime -->
+            <bean class="java.time.Duration" factory-method="ofSeconds">
+                <constructor-arg value="10"/>
+            </bean>
+        </property>
+        <!-- The time the async job acquisition thread should wait before executing the next acquire logic  -->
+        <property name="defaultAsyncJobAcquireWaitTime">  <!-- asyncExecutorDefaultAsyncJobAcquireWaitTime  -->
+            <bean class="java.time.Duration" factory-method="ofSeconds">
+                <constructor-arg value="10"/>
+            </bean>
+        </property>
+        <!-- The time the acquisition thread should wait when the queue is full before executing the next acquire logic. -->
+        <property name="defaultQueueSizeFullWaitTime">  <!-- asyncExecutorDefaultQueueSizeFullWaitTime -->
+            <bean class="java.time.Duration" factory-method="ofSeconds">
+                <constructor-arg value="5"/>
+            </bean>
+        </property>
+        <!--
+        <property name="lockOwner" value=""/>
+        -->
+        <!-- Whether global acquire lock should be used. -->
+        <property name="globalAcquireLockEnabled" value="true"/>
+        <!-- The prefix that the runnable should use for the global acquire lock. Setting a different prefix allows differentiating different engines / executors without them competing for the same lock. -->
+        <property name="globalAcquireLockPrefix" value=""/>
+        <!-- The amount of time the async job acquire thread should wait to acquire the global lock.  -->
+        <property name="asyncJobsGlobalLockWaitTime">
+            <bean class="java.time.Duration" factory-method="ofMinutes">
+                <constructor-arg value="1"/>
+            </bean>
+        </property>
+        <!-- The poll rate of the async job acquire thread for checking if the global lock has been released. -->
+        <property name="asyncJobsGlobalLockPollRate">
+            <bean class="java.time.Duration" factory-method="ofMillis">
+                <constructor-arg value="500"/>
+            </bean>
+        </property>
+        <!-- The amount of time after the last global lock acquire time the lock will be forcefully acquired. This means that if for some reason another node did not release the lock properly because it crashed another node will be able to acquire the lock. -->
+        <property name="asyncJobsGlobalLockForceAcquireAfter">
+            <bean class="java.time.Duration" factory-method="ofMinutes">
+                <constructor-arg value="10"/>
+            </bean>
+        </property>
+        <!-- The amount of time the timer job acquire thread should wait to acquire the global lock. -->
+        <property name="timerLockWaitTime">
+            <bean class="java.time.Duration" factory-method="ofMinutes">
+                <constructor-arg value="1"/>
+            </bean>
+        </property>
+        <!-- The poll rate of the timer job acquire thread for checking if the global lock has been released. -->
+        <property name="timerLockPollRate">
+            <bean class="java.time.Duration" factory-method="ofMillis">
+                <constructor-arg value="500"/>
+            </bean>
+        </property>
+        <!-- The amount of time after the last global lock acquire time the lock will be forcefully acquired. This means that if for some reason another node did not release the lock properly because it crashed another node will be able to acquire the lock. -->
+        <property name="timerLockForceAcquireAfter">
+            <bean class="java.time.Duration" factory-method="ofMinutes">
+                <constructor-arg value="10"/>
+            </bean>
+        </property>
+        <!-- The amount of time a timer job is locked when acquired. During this period of time, no other async executor will try to acquire and lock this job. -->
+        <property name="timerLockTime">  <!-- asyncExecutorTimerLockTimeInMillis -->
+            <bean class="java.time.Duration" factory-method="ofHours">
+                <constructor-arg value="1"/>
+            </bean>
+        </property>
+        <!-- The time the reset expired jobs thread should wait before executing the next reset logic. Expired jobs are jobs that were locked (a lock owner + time was written by some executor, but the job was never completed). During such a check, jobs that are expired are again made available, meaning the lock owner and lock time will be removed. Other executors will now be able to pick it up. A job is deemed expired if the current time has passed the lock time. -->
+        <property name="resetExpiredJobsInterval"> <!-- asyncExecutorResetExpiredJobsInterval -->
+            <bean class="java.time.Duration" factory-method="ofMinutes">
+                <constructor-arg value="1"/>
+            </bean>
+        </property>
+        <!-- The amount of expired jobs that should be rest in one cycle. -->
+        <property name="resetExpiredJobsPageSize" value="3"/> <!-- asyncExecutorResetExpiredJobsPageSize -->
+        <!-- The id of the tenant that the async executor should use when unlocking jobs. -->
+        <property name="tenantId" value=""/>
+    </bean>
+<!--
+    <bean id="asyncHistoryJobExecutorConfiguration"
+          class="org.flowable.job.service.impl.asyncexecutor.AsyncJobExecutorConfiguration">
+        <property name="acquireRunnableThreadName" value="acquireRunnableThreadName2"/>
+        <property name="resetExpiredRunnableName" value="resetExpiredRunnableName2"/>
+    </bean>
+-->
+    <bean id="asyncJobExecutor"
+          class="org.flowable.job.service.impl.asyncexecutor.DefaultAsyncJobExecutor">
+        <property name="configuration" ref="asyncJobExecutorConfiguration"/>
+        <property name="taskExecutor" ref="asyncTaskExecutor"/>
+    </bean>
+
+    <bean id="asyncExecutorTaskExecutorConfiguration"
+          class="org.flowable.common.engine.impl.async.AsyncTaskExecutorConfiguration">
+           <!-- The size of the queue on which jobs to be executed are placed -->
+           <property name="queueSize" value="2048" />  <!-- asyncExecutorThreadPoolQueueSize -->
+           <!-- The minimal number of threads that are kept alive in the thread pool for job execution -->
+           <property name="corePoolSize" value="8"/>   <!-- asyncExecutorCorePoolSize -->
+           <!-- The maximum number of threads that are kept alive in the thread pool for job execution -->
+           <property name="maxPoolSize" value="8"/>            <!-- asyncExecutorMaxPoolSize -->
+           <!-- The time a thread used for job execution must be kept alive before it is destroyed. Default setting is 5 seconds. Having a non-default setting of 0 takes resources, but in the case of many job executions it avoids creating new threads all the time. -->
+           <property name="keepAlive">   <!-- asyncExecutorThreadKeepAliveTime -->
+               <bean class="java.time.Duration" factory-method="ofSeconds">
+                   <constructor-arg value="5"/>
+               </bean>
+           </property>
+           <!-- The time that is waited to gracefully shut down the thread pool used for job execution -->
+           <property name="awaitTerminationPeriod"> <!-- asyncExecutorSecondsToWaitOnShutdown -->
+               <bean class="java.time.Duration" factory-method="ofSeconds">
+                   <constructor-arg value="60"/>
+               </bean>
+           </property>
+           <!-- Whether core threads can time out (which is needed to scale down the threads) -->
+           <property name="allowCoreThreadTimeout" value="true"/>
+           <!-- The naming pattern for the thread pool threads. -->
+           <property name="threadPoolNamingPattern" value="flowable-async-job-executor-thread-%d"/>
+    </bean>
+
+    <bean id="asyncTaskExecutor"
+          class="org.flowable.common.engine.impl.async.DefaultAsyncTaskExecutor" init-method="start">
+        <constructor-arg name="configuration" ref="asyncExecutorTaskExecutorConfiguration"/>
+    </bean>
+
+
+<!--
+    <bean id="asyncHistoryExecutor"
+          class="org.flowable.job.service.impl.asyncexecutor.DefaultAsyncHistoryJobExecutor">
+        <constructor-arg name="configuration" ref="asyncHistoryJobExecutorConfiguration"/>
+    </bean>
+
+    <bean id="asyncHistoryTaskExecutor"
+          class="org.flowable.common.engine.impl.async.DefaultAsyncTaskExecutor" init-method="start">
+        <constructor-arg name="configuration" ref="asyncExecutorTaskExecutorConfiguration"/>
+    </bean>
+-->
+
+</beans>

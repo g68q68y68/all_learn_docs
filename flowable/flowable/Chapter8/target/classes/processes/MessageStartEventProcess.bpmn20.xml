@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <!-- 定义消息 -->
+  <message id="theMessage" name="dataReportingMessage"/>
+  <process id="messageStartEventProcess" name="消息开始事件示例流程">
+    <!-- 定义消息开始事件 -->
+    <startEvent id="messageStart">
+      <messageEventDefinition messageRef="theMessage"/>
+    </startEvent>
+    <userTask id="task1" name="数据上报"/>
+    <endEvent id="end"/>
+    <sequenceFlow id="seqFlow1" sourceRef="task1" targetRef="end"/>
+    <sequenceFlow id="seqFlow2" sourceRef="messageStart" targetRef="task1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_messageStartEventProcess">
+    <bpmndi:BPMNPlane bpmnElement="messageStartEventProcess" id="BPMNPlane_messageStartEventProcess">
+      <bpmndi:BPMNShape bpmnElement="messageStart" id="BPMNShape_messageStart">
+        <omgdc:Bounds height="30.0" width="30.5" x="60.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task1" id="BPMNShape_task1">
+        <omgdc:Bounds height="80.0" width="100.0" x="191.0" y="125.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+        <omgdc:Bounds height="28.0" width="28.0" x="405.0" y="151.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="291.0" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="405.0" y="165.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="90.5" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="191.0" y="165.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

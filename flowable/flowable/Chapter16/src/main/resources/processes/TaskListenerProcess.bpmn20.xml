@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="taskListenerProcess" name="任务监听器示例流程">
+    <startEvent id="startEvent1"/>
+    <userTask id="userTask1" name="数据上报" flowable:assignee="liuxiaopeng">
+      <extensionElements>
+        <!--  通过class属性配置监听器  -->
+        <flowable:taskListener event="create" class="com.bpm.example.tasklistener.demo.listener.MyTaskListener1" />
+        <!--  通过expression属性配置监听器  -->
+        <flowable:taskListener event="assignment" expression="${myTaskListenerBean.printInfo(task)}"/>
+        <!--  通过delegateExpression属性配置监听器  -->
+        <flowable:taskListener event="complete" delegateExpression="${myTaskListener2}"/>
+        <!--  通过脚本配置监听器  -->
+        <flowable:taskListener event="delete" class="org.flowable.engine.impl.bpmn.listener.ScriptTaskListener">
+          <flowable:field name="script">
+            <flowable:string>
+              def taskDefinitionKey = task.getTaskDefinitionKey();
+              def eventName = task.getEventName();
+              println("通过脚本指定的监听器：用户任务" + taskDefinitionKey + "的" + eventName + "事件触发");
+              return taskDefinitionKey + "_" + eventName;
+            </flowable:string>
+          </flowable:field>
+          <flowable:field name="language" stringValue="groovy"/>
+          <flowable:field name="resultVariable" stringValue="nodeEvent"/>
+        </flowable:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="seqFlow1" sourceRef="startEvent1" targetRef="userTask1"/>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="seqFlow2" sourceRef="userTask1" targetRef="endEvent1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_taskListenerProcess">
+    <bpmndi:BPMNPlane bpmnElement="taskListenerProcess" id="BPMNPlane_taskListenerProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="60.0" y="105.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="210.0" y="80.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="420.0" y="106.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow2" id="BPMNEdge_seqFlow2">
+        <omgdi:waypoint x="310.0" y="120.0"/>
+        <omgdi:waypoint x="420.0" y="120.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="seqFlow1" id="BPMNEdge_seqFlow1">
+        <omgdi:waypoint x="90.0" y="120.0"/>
+        <omgdi:waypoint x="210.0" y="120.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
