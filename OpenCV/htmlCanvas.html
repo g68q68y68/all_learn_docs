@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Drawing Example Explained</title>
+    <style>
+        /* 画布边框 */
+        #myCanvas {
+            border: 1px solid #ccc;
+            display: block;
+            margin-bottom: 10px;
+        }
+        /* 控件按钮样式 */
+        #controls button {
+            margin-right: 5px;
+            padding: 5px 10px;
+        }
+        /* 激活模式按钮高亮 */
+        #controls button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<!-- Canvas 元素 -->
+<canvas id="myCanvas" width="600" height="400"></canvas>
+
+<!-- 控件按钮 -->
+<div id="controls">
+    <button id="startBtn">Start Drawing</button>
+    <button id="clearBtn">Clear Canvas</button>
+    <button data-mode="point">Point</button>
+    <button data-mode="line">Line</button>
+    <button data-mode="rect">Rectangle</button>
+    <button data-mode="circle">Circle</button>
+    <button data-mode="arc">Arc</button>
+</div>
+
+<script>
+    /* =============================
+       关键 Canvas API 示例与说明
+       ============================= */
+
+    // getContext('2d'): 获取 2D 绘图上下文，所有 Canvas 绘制操作都要通过它完成
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    /*
+     * ctx.save() / ctx.restore()
+     * 用于保存和恢复绘图状态（包括样式、变换等）
+     * 示例：
+     *   ctx.fillStyle = 'red';
+     *   ctx.save();            // 保存当前 fillStyle = 'red'
+     *   ctx.fillStyle = 'blue';
+     *   ctx.fillRect(10, 10, 50, 50); // 绘制蓝色矩形
+     *   ctx.restore();         // 恢复到 fillStyle = 'red'
+     *   ctx.fillRect(70, 10, 50, 50); // 绘制红色矩形
+     */
+    function demoSaveRestore() {
+        ctx.fillStyle = 'red';
+        ctx.save();
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(10, 10, 50, 50);
+        ctx.restore();
+        ctx.fillRect(70, 10, 50, 50);
+    }
+
+    /*
+     * ctx.beginPath()
+     * 开启一条新的路径。在调用 beginPath 之前创建的路径，不会与之后的路径混淆。
+     * 示例：画两条不相连的线
+     */
+    function demoBeginPath() {
+        ctx.beginPath();
+        ctx.moveTo(10, 100);
+        ctx.lineTo(100, 100);
+        ctx.stroke();
+
+        ctx.beginPath();        // 新路径
+        ctx.moveTo(10, 120);
+        ctx.lineTo(100, 120);
+        ctx.stroke();
+    }
+
+    /*
+     * 实际调用：先演示示例，然后清除后进入绘图模式
+     */
+    demoSaveRestore();
+    demoBeginPath();
+    setTimeout(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // 清空示例
+        initDrawing();
+    }, 10000);
+
+    /* =============================
+       剩余绘图功能逻辑（与之前相同）
+       ============================= */
+    const startBtn = document.getElementById('startBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const modeButtons = document.querySelectorAll('#controls button[data-mode]');
+
+    let drawingEnabled = false;
+    let currentMode = 'point';
+    let isDrawing = false;
+    let startPos = { x: 0, y: 0 };
+    const shapes = [];
+
+    function redraw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        shapes.forEach(shape => drawShape(shape));
+    }
+
+    function drawNewPoint(x, y) {
+        shapes.push({ type: 'point', x, y });
+        drawShape({ type: 'point', x, y });
+    }
+
+    function drawShape(shape) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#000';
+        ctx.fillStyle = '#000';
+
+        switch (shape.type) {
+            case 'point':
+                ctx.arc(shape.x, shape.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+            case 'line':
+                ctx.moveTo(shape.x1, shape.y1);
+                ctx.lineTo(shape.x2, shape.y2);
+                ctx.stroke();
+                break;
+            case 'rect':
+                const xMin = Math.min(shape.x1, shape.x2);
+                const yMin = Math.min(shape.y1, shape.y2);
+                const w = Math.abs(shape.x2 - shape.x1);
+                const h = Math.abs(shape.y2 - shape.y1);
+                ctx.strokeRect(xMin, yMin, w, h);
+                break;
+            case 'circle':
+                const r = Math.hypot(shape.x2 - shape.x1, shape.y2 - shape.y1);
+                ctx.arc(shape.x1, shape.y1, r, 0, Math.PI * 2);
+                ctx.stroke();
+                break;
+            case 'arc':
+                const r2 = Math.hypot(shape.x2 - shape.x1, shape.y2 - shape.y1);
+                ctx.arc(shape.x1, shape.y1, r2, 0, Math.PI);
+                ctx.stroke();
+                break;
+        }
+
+        ctx.restore();
+    }
+
+    function initDrawing() {
+        startBtn.addEventListener('click', () => {
+            drawingEnabled = true;
+            startBtn.disabled = true;
+        });
+        clearBtn.addEventListener('click', () => {
+            shapes.length = 0;
+            redraw();
+        });
+        modeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentMode = btn.getAttribute('data-mode');
+                modeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+        canvas.addEventListener('mousedown', onMouseDown);
+        canvas.addEventListener('mousemove', onMouseMove);
+        canvas.addEventListener('mouseup', onMouseUp);
+    }
+
+    function onMouseDown(e) {
+        if (!drawingEnabled) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        if (currentMode === 'point') {
+            drawNewPoint(x, y);
+        } else {
+            isDrawing = true;
+            startPos = { x, y };
+        }
+    }
+
+    function onMouseMove(e) {
+        if (!drawingEnabled || !isDrawing || currentMode === 'point') return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        redraw();
+        drawShape({ type: currentMode, x1: startPos.x, y1: startPos.y, x2: x, y2: y });
+    }
+
+    function onMouseUp(e) {
+        if (!drawingEnabled || !isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        shapes.push({ type: currentMode, x1: startPos.x, y1: startPos.y, x2: x, y2: y });
+        isDrawing = false;
+        redraw();
+    }
+</script>
+</body>
+</html>

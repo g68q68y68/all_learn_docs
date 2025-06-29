@@ -212,7 +212,9 @@ npm create vue@latest
 > 说明：以上四张动图原创作者：大帅老猿
 
 ## 3.2. 【拉开序幕的 setup】
+
 ### setup 概述
+
 `setup`是`Vue3`中一个新的配置项，值是一个函数，它是 `Composition API` **“表演的舞台**_**”**_，组件中所用到的：数据、方法、计算属性、监视......等等，均配置在`setup`中。
 
 特点如下：
@@ -2282,7 +2284,7 @@ function sendToy(){
      // 注入数据
     let {money,updateMoney} = inject('moneyContext',{money:0,updateMoney:(x:number)=>{}})
      let car = inject('car')
-</script>
+   </script>
    ```
 
 
